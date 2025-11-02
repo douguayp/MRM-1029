@@ -765,7 +765,7 @@ C35,12.070`;
                       <AlertCircle className="h-6 w-6 text-orange-600" />
                       {/* 修改说明：增大警告提示字体 */}
                       <AlertDescription className="text-lg">
-                        <strong>[含 GC 状态条]</strong> 未标定 | 上传 C7–C30 可获得 RT_pred<br/>
+                        <strong>[含 GC 状态条]</strong> 未标定 | 上传 C8–C35 可获得 RT_pred<br/>
                         <span className="text-base text-gray-600">覆盖范围: –</span>
                       </AlertDescription>
                     </Alert>
@@ -885,7 +885,7 @@ C35,12.070`;
                       ) : (
                         <Alert className="border-green-200 bg-green-50">
                           <CheckCircle2 className="h-4 w-4 text-green-600" />
-                          <AlertDescription className="text-xs">标定已应用</AlertDescription>
+                          <AlertDescription className="text-xs">RI 标定已应用</AlertDescription>
                         </Alert>
                       )}
                     </CardContent>

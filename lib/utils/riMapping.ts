@@ -13,8 +13,8 @@ const ALKANE_RI: Record<string, number> = {
 export function validateAlkanes(alkanes: AlkanePoint[]): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (alkanes.length < 6) {
-    errors.push('At least 6 alkane points are required');
+  if (alkanes.length < 5) {
+    errors.push('请至少输入 5 个有效的烷烃保留时间数据');
   }
 
   const enriched = alkanes.map(a => ({
