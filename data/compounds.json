@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cmp_1912_24_9",
+    "cas": "1912-24-9",
+    "name": "Atrazine",
+    "family": "Pesticides",
+    "inchikey": "MXWJVTOOROXGIU-UHFFFAOYSA-N",
+    "synonyms": ["2-Chloro-4-ethylamino-6-isopropylamino-s-triazine"]
+  },
+  {
+    "id": "cmp_2921_88_2",
+    "cas": "2921-88-2",
+    "name": "Chlorpyrifos",
+    "family": "Pesticides",
+    "inchikey": "SBPBAQFWLVIOKP-UHFFFAOYSA-N",
+    "synonyms": ["Chlorpyrifos-ethyl", "Dursban"]
+  },
+  {
+    "id": "cmp_121_75_5",
+    "cas": "121-75-5",
+    "name": "Malathion",
+    "family": "Pesticides",
+    "inchikey": "JXSJBGJIGXNWCI-UHFFFAOYSA-N",
+    "synonyms": ["Carbophos"]
+  },
+  {
+    "id": "cmp_333_41_5",
+    "cas": "333-41-5",
+    "name": "Diazinon",
+    "family": "Pesticides",
+    "inchikey": "MCWXGJITAZMZEV-UHFFFAOYSA-N",
+    "synonyms": ["Dimpylate"]
+  },
+  {
+    "id": "cmp_75_09_2",
+    "cas": "75-09-2",
+    "name": "Dichloromethane",
+    "family": "Pesticides",
+    "inchikey": "YMWUJEATGCHHMB-UHFFFAOYSA-N",
+    "synonyms": ["Methylene chloride", "DCM"]
+  },
+  {
+    "id": "cmp_156_60_5",
+    "cas": "156-60-5",
+    "name": "trans-1,2-Dichloroethylene",
+    "family": "Pesticides",
+    "inchikey": "UREBDLICKHMUKA-OWOJBTEDSA-N",
+    "synonyms": ["trans-DCE", "1,2-trans-Dichloroethene"]
+  },
+  {
+    "id": "cmp_122_14_5",
+    "cas": "122-14-5",
+    "name": "Fenitrothion",
+    "family": "Pesticides",
+    "inchikey": "ZCJPOPBZHLZIH-UHFFFAOYSA-N",
+    "synonyms": ["Sumithion", "O,O-Dimethyl O-(3-methyl-4-nitrophenyl) phosphorothioate"]
+  },
+  {
+    "id": "cmp_56_38_2",
+    "cas": "56-38-2",
+    "name": "Parathion",
+    "family": "Pesticides",
+    "inchikey": "LCCNCVORNKJIRZ-UHFFFAOYSA-N",
+    "synonyms": ["Parathion-ethyl", "O,O-Diethyl O-(4-nitrophenyl) phosphorothioate"]
+  },
+  {
+    "id": "cmp_298_00_0",
+    "cas": "298-00-0",
+    "name": "Parathion-methyl",
+    "family": "Pesticides",
+    "inchikey": "RLBIQVVOMOPOHC-UHFFFAOYSA-N",
+    "synonyms": ["Methyl parathion", "O,O-Dimethyl O-(4-nitrophenyl) phosphorothioate"]
+  }
+]

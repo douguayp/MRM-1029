@@ -1,0 +1,40 @@
+{
+  "Pesticides": {
+    "A-30m-CF": {
+      "method_id": "A-30m-CF",
+      "column_phase_group": "5% phenyl-methylpolysiloxane",
+      "column_geometry": "30 m × 0.25 mm × 0.25 μm",
+      "carrier": "He",
+      "flow_mode": "Constant Flow",
+      "flow_rate": 1.0,
+      "oven_program": "70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)",
+      "inlet_mode": "Splitless",
+      "inlet_temp": 250,
+      "splitless_time": 1.0,
+      "liner": "deactivated straight",
+      "transfer_line_temp": "280–300",
+      "source_temp": "230–250",
+      "note": "Stable RI",
+      "default_rt_window": 0.30
+    },
+    "A-15m-CF": {
+      "method_id": "A-15m-CF",
+      "column_phase_group": "5% phenyl-methylpolysiloxane",
+      "column_geometry": "15 m × 0.25 mm × 0.25 μm",
+      "carrier": "He",
+      "flow_mode": "Constant Flow",
+      "flow_rate": 1.2,
+      "oven_program": "70°C(1)→40°C/min→150; 6°C/min→200; 15°C/min→300(3)",
+      "inlet_mode": "Splitless",
+      "inlet_temp": 250,
+      "splitless_time": 1.0,
+      "liner": "deactivated straight",
+      "transfer_line_temp": "280–300",
+      "source_temp": "230–250",
+      "note": "Fast method",
+      "default_rt_window": 0.20
+    }
+  },
+  "Environmental": {},
+  "Veterinary": {}
+}

@@ -1,0 +1,10 @@
+family,compound_id,RI_ref,RT_window,source
+Pesticides,cmp_1912_24_9,1575,±0.30,NIST
+Pesticides,cmp_2921_88_2,1825,0.3-0.5,NIST
+Pesticides,cmp_121_75_5,1890,±0.30,NIST
+Pesticides,cmp_333_41_5,1520,±0.30,NIST
+Pesticides,cmp_75_09_2,650,±0.25,NIST
+Pesticides,cmp_156_60_5,720,±0.25,NIST
+Pesticides,cmp_122_14_5,1735,±0.30,NIST
+Pesticides,cmp_56_38_2,1815,±0.35,NIST
+Pesticides,cmp_298_00_0,1685,±0.30,NIST
