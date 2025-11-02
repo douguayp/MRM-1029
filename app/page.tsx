@@ -60,7 +60,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Normalization error:', error);
-      alert('在处理输入时出错，请重试');
+      alert('处理输入时出错，请重试');
     } finally {
       setLoading(false);
     }
