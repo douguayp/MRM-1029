@@ -11,6 +11,19 @@ import { BuildRow, GenerationMode } from '@/lib/types';
 // 强制动态渲染
 export const dynamic = 'force-dynamic';
 
+function escapeCSVField(field: string | number | undefined): string {
+  if (field === undefined || field === null || field === '') {
+    return '';
+  }
+  const str = String(field);
+  // 如果包含逗号、引号、换行符或中文字符，用引号包裹
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || /[\u4e00-\u9fa5]/.test(str)) {
+    // 转义内部的引号
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
 function generateGenericCSV(rows: BuildRow[]): string {
   const headers = [
     'Family', 'Compound', 'CAS', 'MethodID', 'Q1', 'Q3', 'CE',
@@ -24,8 +37,8 @@ function generateGenericCSV(rows: BuildRow[]): string {
 
   for (const row of rows) {
     const values = [
-      row.family,
-      row.compound,
+      escapeCSVField(row.family),
+      escapeCSVField(row.compound),
       row.cas,
       row.methodId,
       row.Q1,
@@ -36,18 +49,18 @@ function generateGenericCSV(rows: BuildRow[]): string {
       row.QuantQual,
       row.RelativeIntensity,
       row.RI_ref ?? '',
-      row.RT_window ?? '',
+      escapeCSVField(row.RT_window),
       row.RT_pred ?? '',
-      row.ColumnPhase,
-      row.ColumnGeom,
+      escapeCSVField(row.ColumnPhase),
+      escapeCSVField(row.ColumnGeom),
       row.Carrier,
       row.FlowMode,
       row.FlowRate,
-      `"${row.OvenProgram}"`,
-      row.Inlet,
+      escapeCSVField(row.OvenProgram),
+      escapeCSVField(row.Inlet),
       row.Target,
       row.Source,
-      row.Comment ?? ''
+      escapeCSVField(row.Comment)
     ];
     lines.push(values.join(','));
   }
@@ -93,14 +106,14 @@ function generateMassHunterCSV(rows: BuildRow[]): string {
     ].filter(Boolean).join(' | ');
 
     const values = [
-      row.compound || row.compoundId,
+      escapeCSVField(row.compound || row.compoundId),
       row.Q1,
       row.Q3,
       row.CE,
       row.QuantQual,
       row.RT_pred ?? '',
       rtWindowValue,
-      `"${comment}"`
+      escapeCSVField(comment)
     ];
     lines.push(values.join(','));
   }
