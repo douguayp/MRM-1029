@@ -1,0 +1,75 @@
+Option 414 Constant Flow Method:	M7414AA: Pesticides Analyzer, 5x15m MC BF, GC/MS/MS	
+Configuration	MMI + 5m + PUU + 15m + MS	
+Columns	Agilent J&W HP-5ms UI 5 m × 0.25 mm × 0.25 μm (P/N: G3903-61005)	
+	Agilent J&W HP-5ms UI 15 m × 0.25 mm × 0.25 μm (P/N: 19091S-431 UI)	
+PUU	Purged Ultimate Union (for backflush)	
+		
+		
+Retention time locking 	Chlorpyrifos-methyl locked to	8.524 min
+		
+		
+GC 	Agilent 7890B Series	
+Inlet 	MMI	
+Inlet liner options	4-mm UI liner with wool	
+	2-mm dimpled liner	
+Carrier gas 	Helium	
+Inlet flow  (column 1)	~ 1 mL/min (4.24 psi during backflush)	
+PUU flow (column 2)	column 1 flow + 0.2 mL/min (~ 1.2 mL/min)	
+		
+Hot Splitless Injection mode		
+Inlet temperature	280°C	
+Injection volume 	1 μL (2 μL with 2-mm dimpled liner)	
+Purge flow to split vent	30 mL/min at 0.75 min	
+Gas saver 	On (20 mL/min at 2.0 min)	
+Cryo	OFF	
+		
+Solvent-Vent Injection mode (suggested method)		
+Inlet temperature	60 °C	
+Injection volume 	1 μL (2 μL with 2-mm dimpled liner)	
+		
+Ramp	Temp	Hold Time
+	60 °C  	0.35 min
+900 °C/min	280 °C	15 min
+900 °C/min	300 °C	0 min
+		
+Purge flow to split vent	50 mL/min at 1.5 min	
+Gas saver 	On (20 mL/min at 2.0 min)	
+Cryo	ON (60 °C)	
+		
+Oven temperature program 		
+Ramp	Temp	Hold Time
+	60 °C  	1.5 min
+50 °C/min	160 °C	0 min
+8 °C/min	240 °C	0 min
+50 °C/min	280 °C	2.5 min
+100 °C/min	290 °C	3.1 min
+		
+Total Run Time	20.00 min	
+		
+The #414 option is configured with a 240 V GC oven to allow for the rapid temperature rates in the oven and inlet programs).		
+NOTE - Add an additional 2 min hold time to extend the GC run for late eluters. (i.e. Imibenconazol, Cinidon-ethyl, Propaquizafop, Temephos, and Fluthiacet-methyl)		
+		
+Capillary flow technology 		
+Aux EPC gas 	Helium	
+Aux EPC pressure 	0.836 mL/min during run, 4.2415 mL/min during backflush	
+		
+Backflushing Conditions		
+Timing	1.3 min duration during post-run	
+Oven temperature	290 °C	
+Aux EPC pressure	40 psi	
+Inlet pressure	1 psi	
+BACKFLUSH IS ADVISABLE AND STRONGLY RECOMMENDED!		
+		
+Tandem  Mass Spectrometer	Agilent 7010	
+Mode	Electron impact	
+Transfer line temperature	280 °C	
+Source temperature	280 °C	
+Quadrupole temperature	Q1 and Q2 = 150 °C	
+Tune file	atunes.eiex.tune.xml	
+		
+MRM Mode Conditions		
+MS1 resolution	Wide	
+MS2 resolution	Wide	
+Collision gas flow	Nitrogen at 1.5 mL/min,	
+Quenching gas flow	Helium at 2.25 mL/min	
+Detector Gain	10	

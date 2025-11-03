@@ -21,11 +21,17 @@ type Step = StepType;
 
 // 修改说明：恢复使用简单的字符串状态来存储烷烃数据
 export default function Home() {
+  // === 状态管理（State Management）===
+  // 使用 React Hooks 的 useState 来管理组件状态
+  
   const [family, setFamily] = useState<Family>('Pesticides');
   const [step, setStep] = useState<Step>('input');
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
   const [mode, setMode] = useState<GenerationMode>('withGC');
-  const [methodId, setMethodId] = useState('A-30m-CF');
+  
+  // 修改说明 v1.2：将默认方法改为 'CF40-LOCKABLE'（支持 RT Lock）
+  // 原因：CF40-LOCKABLE 是 CF-40 等效方法，支持 RT 锁定到 Chlorpyrifos-methyl 18.111 min
+  const [methodId, setMethodId] = useState('CF40-LOCKABLE');
   const [normalized, setNormalized] = useState<NormalizedCompound[]>([]);
   const [unmatched, setUnmatched] = useState<string[]>([]);
   const [rows, setRows] = useState<BuildRow[]>([]);
@@ -37,6 +43,13 @@ export default function Home() {
   const [expandCE, setExpandCE] = useState(true);
   const [ceDelta, setCeDelta] = useState(4);
   const [showGapReport, setShowGapReport] = useState(false);
+  
+  // === RT Lock 状态管理 v1.2 ===
+  // RT Lock 允许将所有化合物的 RT 基于一个参考化合物进行平移
+  const [rtLockEnabled, setRtLockEnabled] = useState(true);           // RT Lock 开关（默认开启）
+  const [rtLockCompound, setRtLockCompound] = useState('Chlorpyrifos-methyl');  // 锁定化合物
+  const [rtLockTargetRT, setRtLockTargetRT] = useState(18.111);       // 目标 RT（min）
+  const [rtLockDelta, setRtLockDelta] = useState(0);                  // 实际偏移量（计算得出）
 
   function markStepCompleted(stepToMark: Step) {
     if (!completedSteps.includes(stepToMark)) {
@@ -274,6 +287,9 @@ export default function Home() {
       if (data.gap && unmatched.length > 0) {
         downloadCSV(data.gap, 'gap_report.csv');
       }
+
+      // 标记步骤 3 为已完成
+      markStepCompleted('configure');
     } catch (error) {
       console.error('Export error:', error);
     }
@@ -305,7 +321,8 @@ Parathion
   };
 
   const handleDownloadAlkaneTemplate = () => {
-    // 创建 RI 标定模板内容 (基于A-30m-CF方法的典型RT值)
+    // 修改说明：更新注释，去除品牌相关方法名称
+    // 创建 RI 标定模板内容（基于标准 40分钟方法的典型 RT 值）
     const alkaneTemplateContent = `Alkane,RT(min)
 C8,2.466
 C9,3.014
@@ -661,22 +678,74 @@ C35,12.070`;
                         </div>
                       </RadioGroup>
 
+                      {/* === GC 方法选择区域 === */}
+                      {/* 修改说明（v1.1 厂商中立化）：
+                          1. 扩展为 4 个通用方法模板
+                          2. 去除品牌相关 ID（A-30m-CF → STD-CF-40）
+                          3. 添加方法描述标签和详细参数
+                          4. 支持恒流/恒压/反吹等多种模式
+                      */}
                       {mode === 'withGC' && (
                         <div className="pt-4 border-t">
-                          {/* 修改说明：增大GC方法选择标题 */}
                           <h3 className="text-xl font-semibold mb-4">选择 GC 方法（含 GC 时可见）</h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            {/* 方法 0: CF40-LOCKABLE - CF-40等效，串联+反吹，支持RT Lock */}
+                            {/* v1.2 新增：作为默认方法，置顶显示 */}
                             <div
-                              onClick={() => setMethodId('A-30m-CF')}
+                              onClick={() => setMethodId('CF40-LOCKABLE')}
                               className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'A-30m-CF'
+                                methodId === 'CF40-LOCKABLE'
                                   ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
                                   : 'border-border hover:shadow'
                               }`}
                             >
-                              {/* 修改说明：增大方法名称字体 */}
-                              <div className="font-bold text-2xl mb-3 text-gray-800">A-30m-CF</div>
-                              {/* 修改说明：显示完整方法信息 */}
+                              <div className="font-bold text-2xl mb-3 text-gray-800">
+                                恒流模式（约40min）
+                              </div>
+                              <div className="text-sm text-gray-500 mb-3 italic">CF-40 Equivalent (~40.5 min), Series 2×15 m, Backflush-capable</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (柱1) + 1.2 mL/min (柱2)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (Hot 280°C)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ Post-run</span> (5 min @ 310°C)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    60°C(1)→40°C/min→120; 5°C/min→310
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~40.5 min
+                                </div>
+                                <div className="text-sm text-gray-500 pt-2 border-t mt-2">
+                                  <span className="font-semibold">建议RTL:</span> Chlorpyrifos-methyl（CAS：5598-13-0）：18.111 min
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* 方法 1: STD-CF-40 - 标准分离，恒流，~40分钟 */}
+                            <div
+                              onClick={() => setMethodId('STD-CF-40')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'STD-CF-40'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">STD-CF-40</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Flow</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
                                   <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
@@ -688,7 +757,7 @@ C35,12.070`;
                                   <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (250°C, 1.0 min)
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">温度程序:</span>
@@ -697,20 +766,22 @@ C35,12.070`;
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~40 min
+                                  运行时间: ~40 min | RI 支持: C8–C35
                                 </div>
                               </div>
                             </div>
 
+                            {/* 方法 2: FAST-CF-20 - 快速筛查，恒流，~20分钟 */}
                             <div
-                              onClick={() => setMethodId('A-15m-CF')}
+                              onClick={() => setMethodId('FAST-CF-20')}
                               className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'A-15m-CF'
+                                methodId === 'FAST-CF-20'
                                   ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
                                   : 'border-border hover:shadow'
                               }`}
                             >
-                              <div className="font-bold text-2xl mb-3 text-gray-800">A-15m-CF</div>
+                              <div className="font-bold text-2xl mb-3 text-gray-800">FAST-CF-20</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Fast Screening — Constant Flow</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
                                   <span className="font-semibold">色谱柱:</span> 15 m × 0.25 mm × 0.25 μm
@@ -722,19 +793,95 @@ C35,12.070`;
                                   <span className="font-semibold">载气:</span> He, 1.2 mL/min (恒流)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (250°C, 1.0 min)
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 0.75 min)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">温度程序:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
-                                    70°C(1)→40°C/min→150; 6°C/min→200; 15°C/min→300(3)
+                                    70°C(0.5)→40°C/min→180; 10°C/min→300(2.5)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~20 min (快速方法)
+                                  运行时间: ~20 min | RI 支持: C8–C35
                                 </div>
                               </div>
                             </div>
+
+                            {/* 方法 3: CP-40 - 标准分离，恒压，~40分钟 */}
+                            <div
+                              onClick={() => setMethodId('CP-40')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'CP-40'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CP-40</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Pressure</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 10.0 psi (恒压)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~40 min | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* 方法 4: CF-5x15 - 串联+反吹，恒流 */}
+                            <div
+                              onClick={() => setMethodId('CF-5x15')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'CF-5x15'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CF-5x15</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Constant Flow with Backflush (series 2×15 m)</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (280°C, 0.75 min)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ 开启</span> (5 min @ 310°C)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    60°C(1)→40°C/min→120; 5°C/min→310
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  适用于复杂基质 | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
                           </div>
                         </div>
                       )}
@@ -957,13 +1104,17 @@ C35,12.070`;
                 导出方法文件
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                {/* 修改说明：增大标签字体 */}
+                {/* 修改说明（v1.1 厂商中立化）：
+                    - 保留 Generic CSV 按钮
+                    - 将 "MassHunter" 改为 "Vendor-A Compatible"（厂商兼容格式）
+                    - 导出全部按钮保持不变
+                */}
                 <span className="text-lg text-gray-600 mr-2">选择格式：</span>
                 <Button onClick={() => handleExport('generic')} variant="outline" size="lg" className="font-medium">
                   Generic CSV
                 </Button>
                 <Button onClick={() => handleExport('masshunter')} variant="outline" size="lg" className="font-medium">
-                  MassHunter
+                  Vendor-A Compatible
                 </Button>
                 <Button onClick={() => handleExport('both')} size="lg" className="font-medium">
                   导出全部
