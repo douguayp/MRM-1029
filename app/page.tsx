@@ -404,25 +404,43 @@ C35,12.070`;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* EPA Style Header - Simplified */}
-      <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md">
-        <div className="container mx-auto max-w-7xl">
+      {/* Minimal Navigation Header */}
+      <header className="bg-white border-b border-gray-200 py-3 px-6 shadow-sm">
+        <div className="w-full max-w-full">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">GC-QQQ Method Generator</h1>
+            {/* Left: Logo and Brand */}
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
-                <HelpCircle className="h-5 w-5" />
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">M</span>
+              </div>
+              <h1 className="text-lg font-semibold text-gray-900">
+                MassHunter GC-QQQ Method Generator
+              </h1>
+            </div>
+
+            {/* Right: Navigation Links */}
+            <nav className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Docs
               </Button>
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
-                <Settings className="h-5 w-5" />
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Pricing
               </Button>
               
-              {/* 用户登录/菜单 */}
+              <Separator orientation="vertical" className="h-6 mx-1" />
+              
+              {/* User Menu or Sign in */}
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10 gap-2">
-                      <User className="h-5 w-5" />
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 gap-2">
+                      <User className="h-4 w-4" />
                       <span className="hidden md:inline">{user.username}</span>
                     </Button>
                   </DropdownMenuTrigger>
@@ -447,14 +465,20 @@ C35,12.070`;
               ) : (
                 <Button 
                   variant="ghost" 
-                  className="text-primary-foreground hover:bg-primary-foreground/10 gap-2"
+                  className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
                   onClick={() => setShowLoginDialog(true)}
                 >
-                  <LogIn className="h-5 w-5" />
-                  <span className="hidden md:inline">登录</span>
+                  Sign in
                 </Button>
               )}
-            </div>
+              
+              <Button 
+                className="bg-primary hover:bg-primary/90 text-white"
+                onClick={() => !user && setShowLoginDialog(true)}
+              >
+                Try now
+              </Button>
+            </nav>
           </div>
         </div>
       </header>

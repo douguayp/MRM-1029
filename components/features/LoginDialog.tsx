@@ -217,8 +217,16 @@ export function LoginDialog({ open, onOpenChange, onLogin }: LoginDialogProps) {
     setSentCode('');
   }
 
+  function handleDialogChange(isOpen: boolean) {
+    if (!isOpen) {
+      // 对话框关闭时，重置所有状态到初始登录页面
+      resetToAuth();
+    }
+    onOpenChange(isOpen);
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-md">
         {viewMode === 'auth' ? (
           <>
