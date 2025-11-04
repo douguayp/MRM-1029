@@ -50,6 +50,9 @@ export default function Home() {
   const [rtLockCompound, setRtLockCompound] = useState('Chlorpyrifos-methyl');  // 锁定化合物
   const [rtLockTargetRT, setRtLockTargetRT] = useState(18.111);       // 目标 RT（min）
   const [rtLockDelta, setRtLockDelta] = useState(0);                  // 实际偏移量（计算得出）
+  
+  // === GC 方法导出 v1.3 ===
+  const [selectedMethodForExport, setSelectedMethodForExport] = useState<string>('');
 
   function markStepCompleted(stepToMark: Step) {
     if (!completedSteps.includes(stepToMark)) {
@@ -305,6 +308,33 @@ export default function Home() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleExportMethod = async () => {
+    if (!selectedMethodForExport) {
+      alert('请先选择要导出的 GC 方法');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/export-method', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          family,
+          methodId: selectedMethodForExport
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.csv) {
+        downloadCSV(data.csv, `GC_Method_${selectedMethodForExport}.csv`);
+      }
+    } catch (error) {
+      console.error('Export method error:', error);
+      alert('导出 GC 方法失败');
+    }
   };
 
   const handleDownloadTemplate = () => {
@@ -1097,11 +1127,12 @@ C35,12.070`;
       {/* 修改说明：底部导出栏 - 增大字体 */}
       {step === 'configure' && rows.length > 0 && (
         <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-200 p-5 shadow-lg">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-6xl space-y-4">
+            {/* Transitions 导出 */}
             <div className="flex items-center justify-between flex-wrap gap-4">
               {/* 修改说明：增大导出标题字体 */}
               <div className="text-lg font-semibold text-gray-700">
-                导出方法文件
+                导出 Transitions
               </div>
               <div className="flex items-center gap-3 flex-wrap">
                 {/* 修改说明（v1.1 厂商中立化）：
@@ -1128,6 +1159,39 @@ C35,12.070`;
                     </Button>
                   </>
                 )}
+              </div>
+            </div>
+
+            {/* GC 方法导出 v1.3 */}
+            <Separator />
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="text-lg font-semibold text-gray-700">
+                导出 GC 方法参数
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-lg text-gray-600 mr-2">选择方法：</span>
+                <select
+                  value={selectedMethodForExport}
+                  onChange={(e) => setSelectedMethodForExport(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">-- 请选择 --</option>
+                  <option value="CF40-LOCKABLE">CF40-LOCKABLE (恒流模式约40min)</option>
+                  <option value="STD-CF-40">STD-CF-40 (标准分离~40min)</option>
+                  <option value="FAST-CF-20">FAST-CF-20 (快速筛查~20min)</option>
+                  <option value="CP-40">CP-40 (恒压模式~40min)</option>
+                  <option value="CF-5x15">CF-5x15 (快速5层~15min)</option>
+                </select>
+                <Button 
+                  onClick={handleExportMethod} 
+                  variant="default" 
+                  size="lg" 
+                  className="font-medium"
+                  disabled={!selectedMethodForExport}
+                >
+                  <FileDown className="h-5 w-5 mr-2" />
+                  导出方法
+                </Button>
               </div>
             </div>
           </div>
