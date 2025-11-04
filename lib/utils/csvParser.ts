@@ -118,9 +118,9 @@ export function loadCompoundDatabase(): CompoundRecord[] {
     if (!fields || fields.length < 40) continue;
     
     // 提取关键字段
-    const commonName = fields[3]?.trim() || '';    // Common Name (列4)
-    const casNoDashes = fields[7]?.trim() || '';   // CAS without dashes (列8)
-    const formalCAS = fields[17]?.trim() || '';    // Formal CAS # (列18)
+    const commonName = fields[3]?.trim() || '';    // Common Name (字段4, 索引3)
+    const casNoDashes = fields[7]?.trim() || '';   // CAS without dashes (字段8, 索引7)
+    const formalCAS = fields[18]?.trim() || '';    // Formal CAS # (字段19, 索引18)
     
     // 跳过空记录
     if (!commonName) continue;
@@ -131,22 +131,22 @@ export function loadCompoundDatabase(): CompoundRecord[] {
         commonName,
         formalCAS: formalCAS || `${casNoDashes.slice(0, 4)}-${casNoDashes.slice(4, 6)}-${casNoDashes.slice(6)}`,
         casNoDashes,
-        chineseName: fields[34]?.trim() || '',        // Chinese Name (列35)
-        molecularFormula: fields[4]?.trim() || '',    // Molecular Formula (列5)
-        molecularWeight: parseFloat(fields[5]) || 0,  // Molecular Weight (列6)
-        classification1: fields[8]?.trim() || '',     // Classification 1 (列9)
-        classification2: fields[9]?.trim() || '',     // Classification 2 (列10)
+        chineseName: fields[35]?.trim() || '',        // Chinese Name (字段36, 索引35)
+        molecularFormula: fields[4]?.trim() || '',    // Molecular Formula (字段5, 索引4)
+        molecularWeight: parseFloat(fields[5]) || 0,  // Molecular Weight (字段6, 索引5)
+        classification1: fields[8]?.trim() || '',     // Classification 1 (字段9, 索引8)
+        classification2: fields[9]?.trim() || '',     // Classification 2 (字段10, 索引9)
         // RI 和 RT 数据
-        ri_CF40: parseFloat(fields[11]) || null,      // RI CF 40-min (列12)
-        rt_CF40: parseFloat(fields[10]) || null,      // RT CF 40-min (列11)
-        ri_CP40: parseFloat(fields[13]) || null,      // RI CP 40-min (列14)
-        rt_CP40: parseFloat(fields[12]) || null,      // RT CP 40-min (列13)
-        ri_CF20: parseFloat(fields[17]) || null,      // RI CF 20-min (列18)
-        rt_CF20: parseFloat(fields[14]) || null,      // RT CF 20-min (列15)
-        ri_CF5x15: parseFloat(fields[19]) || null,    // RI CF 5x15 (列20)
-        rt_CF5x15: parseFloat(fields[16]) || null,    // RT CF 5x15 (列17)
-        synonyms: fields[42]?.trim() || '',           // Synonyms (列43)
-        japaneseName: fields[36]?.trim() || '',       // Japanese Name (列37)
+        ri_CF40: parseFloat(fields[11]) || null,      // RI CF 40-min (字段12, 索引11)
+        rt_CF40: parseFloat(fields[10]) || null,      // RT CF 40-min (字段11, 索引10)
+        ri_CP40: parseFloat(fields[13]) || null,      // RI CP 40-min (字段14, 索引13)
+        rt_CP40: parseFloat(fields[12]) || null,      // RT CP 40-min (字段13, 索引12)
+        ri_CF20: parseFloat(fields[15]) || null,      // RI CF 20-min (字段16, 索引15)
+        rt_CF20: parseFloat(fields[14]) || null,      // RT CF 20-min (字段15, 索引14)
+        ri_CF5x15: null,                              // RI CF 5x15 (暂无对应列)
+        rt_CF5x15: parseFloat(fields[16]) || null,    // RT CF 5x15 (字段17, 索引16)
+        synonyms: fields[42]?.trim() || '',           // Synonyms (字段43, 索引42)
+        japaneseName: fields[37]?.trim() || '',       // Japanese Name (字段38, 索引37)
       };
       
       compoundsMap.set(commonName, record);
@@ -271,13 +271,13 @@ export function loadTransitionsFromCSV(casNumbers: string[]): TransitionRecord[]
     // 检查是否在查询列表中
     if (!normalizedCAS.includes(casNoDashes)) continue;
     
-    const commonName = fields[18]?.trim() || '';          // Common Name (列19)
-    const formalCAS = fields[17]?.trim() || '';           // Formal CAS # (列18)
-    const precursorIon = parseFloat(fields[21]) || 0;     // Precursor Ion (列22)
-    const productIon = parseFloat(fields[23]) || 0;       // Product Ion (列24)
-    const collisionEnergy = parseFloat(fields[26]) || 0;  // CE (列27)
-    const quantQual = fields[32]?.trim() || '';           // Quant/Qual (列33)
-    const relativeIntensity = fields[31]?.trim() || '';   // Relative Intensity (列32)
+    const commonName = fields[3]?.trim() || '';           // Common Name (字段4, 索引3)
+    const formalCAS = fields[18]?.trim() || '';           // Formal CAS # (字段19, 索引18)
+    const precursorIon = parseFloat(fields[22]) || 0;     // Precursor Ion (字段23, 索引22)
+    const productIon = parseFloat(fields[24]) || 0;       // Product Ion (字段25, 索引24)
+    const collisionEnergy = parseFloat(fields[27]) || 0;  // CE (字段28, 索引27)
+    const quantQual = fields[33]?.trim() || '';           // Quant/Qual (字段34, 索引33)
+    const relativeIntensity = fields[32]?.trim() || '';   // Relative Intensity (字段33, 索引32)
     
     if (precursorIon > 0 && productIon > 0) {
       transitions.push({
