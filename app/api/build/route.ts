@@ -1,17 +1,19 @@
 /**
  * 方法构建API路由
  * 
- * 修改说明：添加动态路由配置
- * 修改逻辑：强制动态渲染，处理POST请求
+ * v2.0 - 完全从 database.csv 读取数据
+ * 修改说明：不再使用旧的 transitions.csv 和 ri.csv，改为统一从 database.csv 读取
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { loadTransitions, loadRI, loadMethods } from '@/lib/infra/repo/fileRepo';
-import { expandThreePointCE } from '@/lib/utils/ceExpansion';
+import { loadMethods } from '@/lib/infra/repo/fileRepo';
+import { loadCompoundDatabase, loadTransitionsFromCSV } from '@/lib/utils/csvParser';
 import { Family, GenerationMode, BuildRow } from '@/lib/types';
 
-// 强制动态渲染
 export const dynamic = 'force-dynamic';
+
+// 缓存数据库以提高性能
+let cachedDatabase: ReturnType<typeof loadCompoundDatabase> | null = null;
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,38 +41,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const transitions = await loadTransitions({ family, ids: compoundIds });
-    const riData = await loadRI({ family, ids: compoundIds });
-    const methods = await loadMethods();
+    console.log(`Build API v2.0 - Received ${compoundIds.length} compound IDs:`, compoundIds);
 
-    const riMap = new Map(riData.map(r => [r.compound_id, r]));
-
-    let expanded = transitions;
-    if (expandCE) {
-      expanded = expandThreePointCE(transitions, delta);
+    // 加载数据库（只加载一次）
+    if (!cachedDatabase) {
+      console.log('Loading compound database from database.csv...');
+      cachedDatabase = loadCompoundDatabase();
+      console.log(`Loaded ${cachedDatabase.length} compounds from database`);
     }
+
+    // 从 database.csv 加载 transitions
+    const transitionsData = loadTransitionsFromCSV(compoundIds);
+    console.log(`Build API - Loaded ${transitionsData.length} transitions from CSV`);
+
+    // 加载方法配置
+    const methods = await loadMethods();
+    const method = methodId ? methods[family]?.[methodId] : null;
 
     const rows: BuildRow[] = [];
 
-    for (const t of expanded) {
-      const ri = riMap.get(t.compound_id);
-      const method = methodId ? methods[family]?.[methodId] : null;
+    for (const t of transitionsData) {
+      // 从数据库中查找化合物信息（用于获取 RI）
+      const compound = cachedDatabase.find(
+        c => c.casNoDashes === t.casNoDashes || c.formalCAS === t.formalCAS
+      );
 
-      const row: BuildRow = {
-        family: t.family,
-        compound: '',
-        cas: '',
+      // 基础行数据
+      const baseRow: BuildRow = {
+        family,
+        compound: t.commonName,
+        cas: t.formalCAS,
         methodId: methodId || '',
-        compoundId: t.compound_id,
-        Q1: t.Q1,
-        Q3: t.Q3,
-        CE: (t as any).CE_value ?? t.CE_nominal,
-        CE_low: t.CE_low ?? t.CE_nominal - delta,
-        CE_high: t.CE_high ?? t.CE_nominal + delta,
-        QuantQual: t.QuantQual,
-        RelativeIntensity: t.RelativeIntensity,
-        RI_ref: ri?.RI_ref,
-        RT_window: ri?.RT_window,
+        compoundId: t.casNoDashes || t.formalCAS,
+        Q1: t.precursorIon,
+        Q3: t.productIon,
+        CE: t.collisionEnergy,
+        CE_low: t.collisionEnergy - delta,
+        CE_high: t.collisionEnergy + delta,
+        QuantQual: t.quantQual as 'Quantifier' | 'Qualifier',
+        RelativeIntensity: parseFloat(t.relativeIntensity) || 0,
+        RI_ref: compound?.ri_CF40 || undefined,  // 使用 CF40 的 RI（根据你的方法调整）
+        RT_window: method?.default_rt_window?.toString(),
         RT_pred: undefined,
         ColumnPhase: method?.column_phase_group || '',
         ColumnGeom: method?.column_geometry || '',
@@ -79,22 +90,31 @@ export async function POST(request: NextRequest) {
         FlowRate: method?.flow_rate || 0,
         OvenProgram: method?.oven_program || '',
         Inlet: method?.inlet_mode || '',
-        Target: t.Target,
-        Source: t.Source,
-        Comment: expandCE ? `CE_tier: ${(t as any).CE_tier || 'N'}` : undefined
+        Target: t.quantQual === 'Q0' ? 'Target' : '',
+        Source: 'Database',
+        Comment: undefined
       };
 
-      rows.push(row);
+      // CE 扩展：生成 L/N/H 三行
+      if (expandCE) {
+        rows.push({ ...baseRow, CE: baseRow.CE_low, Comment: 'CE_tier: L' });
+        rows.push({ ...baseRow, Comment: 'CE_tier: N' });
+        rows.push({ ...baseRow, CE: baseRow.CE_high, Comment: 'CE_tier: H' });
+      } else {
+        rows.push(baseRow);
+      }
     }
+
+    console.log(`Build API - Returning ${rows.length} rows`);
 
     return NextResponse.json({
       rows,
       methodFingerprint: methodId ? methods[family]?.[methodId] : null
     });
   } catch (error) {
-    console.error('Build API error:', error);
+    console.error('Build API v2.0 error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
