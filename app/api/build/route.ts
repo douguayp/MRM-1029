@@ -9,11 +9,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { loadMethods } from '@/lib/infra/repo/fileRepo';
 import { loadCompoundDatabase, loadTransitionsFromCSV } from '@/lib/utils/csvParser';
 import { Family, GenerationMode, BuildRow } from '@/lib/types';
+import fs from 'fs';
+import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
-// 缓存数据库以提高性能
+// 缓存数据库以提高性能 + 文件修改时间检测
 let cachedDatabase: ReturnType<typeof loadCompoundDatabase> | null = null;
+let lastModifiedTime: number = 0;
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,13 +44,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`Build API v2.0 - Received ${compoundIds.length} compound IDs:`, compoundIds);
+    console.log(`Build API v2.1 - Received ${compoundIds.length} compound IDs:`, compoundIds);
 
-    // 加载数据库（只加载一次）
-    if (!cachedDatabase) {
-      console.log('Loading compound database from database.csv...');
+    // 检查文件是否被修改，如果修改则重新加载
+    const csvPath = path.join(process.cwd(), 'data', 'database.csv');
+    const stats = fs.statSync(csvPath);
+    const currentModifiedTime = stats.mtimeMs;
+    
+    if (!cachedDatabase || currentModifiedTime > lastModifiedTime) {
+      const action = cachedDatabase ? 'Reloading' : 'Loading';
+      console.log(`${action} compound database from database.csv...`);
       cachedDatabase = loadCompoundDatabase();
-      console.log(`Loaded ${cachedDatabase.length} compounds from database`);
+      lastModifiedTime = currentModifiedTime;
+      console.log(`✓ Loaded ${cachedDatabase.length} compounds (last modified: ${new Date(currentModifiedTime).toLocaleString()})`);
     }
 
     // 从 database.csv 加载 transitions

@@ -8,18 +8,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Family, NormalizedCompound } from '@/lib/types';
 import { loadCompoundDatabase, smartSearch } from '@/lib/utils/csvParser';
+import fs from 'fs';
+import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
-// 缓存数据库以提高性能
+// 缓存数据库以提高性能 + 文件修改时间检测
 let cachedDatabase: ReturnType<typeof loadCompoundDatabase> | null = null;
+let lastModifiedTime: number = 0;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { family, query } = body as { family: Family; query: string[] };
     
-    console.log('Normalize API v2.0 - Family:', family, 'Query:', query);
+    console.log('Normalize API v2.1 - Family:', family, 'Query:', query);
 
     if (!family || !query || !Array.isArray(query)) {
       return NextResponse.json(
@@ -28,11 +31,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 加载数据库（只加载一次）
-    if (!cachedDatabase) {
-      console.log('Loading compound database from database.csv...');
+    // 检查文件是否被修改，如果修改则重新加载
+    const csvPath = path.join(process.cwd(), 'data', 'database.csv');
+    const stats = fs.statSync(csvPath);
+    const currentModifiedTime = stats.mtimeMs;
+    
+    if (!cachedDatabase || currentModifiedTime > lastModifiedTime) {
+      const action = cachedDatabase ? 'Reloading' : 'Loading';
+      console.log(`${action} compound database from database.csv...`);
       cachedDatabase = loadCompoundDatabase();
-      console.log(`Loaded ${cachedDatabase.length} compounds from database`);
+      lastModifiedTime = currentModifiedTime;
+      console.log(`✓ Loaded ${cachedDatabase.length} compounds (last modified: ${new Date(currentModifiedTime).toLocaleString()})`);
     }
 
     const results: NormalizedCompound[] = [];
