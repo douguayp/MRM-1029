@@ -40,30 +40,58 @@ export interface CompoundRecord {
 }
 
 /**
- * 解析 CSV 行
- * @param line CSV 行文本
- * @returns 字段数组
+ * 解析 CSV 内容（支持跨行引号字段）
+ * @param content CSV 文件完整内容
+ * @returns 记录数组（每个记录是一个字段数组）
  */
-function parseCSVLine(line: string): string[] {
-  const result: string[] = [];
-  let current = '';
+function parseCSV(content: string): string[][] {
+  const records: string[][] = [];
+  let currentRecord: string[] = [];
+  let currentField = '';
   let inQuotes = false;
   
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+    const nextChar = content[i + 1];
     
-    if (char === '"') {
+    if (char === '"' && inQuotes && nextChar === '"') {
+      // 转义的引号 "" → "
+      currentField += '"';
+      i++; // 跳过下一个引号
+    } else if (char === '"') {
+      // 开始或结束引号
       inQuotes = !inQuotes;
     } else if (char === ',' && !inQuotes) {
-      result.push(current.trim());
-      current = '';
+      // 字段分隔符
+      currentRecord.push(currentField);
+      currentField = '';
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      // 行结束
+      if (char === '\r' && nextChar === '\n') {
+        i++; // 跳过 \r\n 中的 \n
+      }
+      currentRecord.push(currentField);
+      currentField = '';
+      
+      // 保存当前记录（如果非空）
+      if (currentRecord.length > 0 && currentRecord.some(f => f.trim())) {
+        records.push(currentRecord);
+      }
+      currentRecord = [];
     } else {
-      current += char;
+      currentField += char;
     }
   }
   
-  result.push(current.trim());
-  return result;
+  // 保存最后一个字段和记录
+  if (currentField || currentRecord.length > 0) {
+    currentRecord.push(currentField);
+    if (currentRecord.some(f => f.trim())) {
+      records.push(currentRecord);
+    }
+  }
+  
+  return records;
 }
 
 /**
@@ -79,17 +107,15 @@ export function loadCompoundDatabase(): CompoundRecord[] {
   }
   
   const content = fs.readFileSync(csvPath, 'utf-8');
-  const lines = content.split('\n');
+  const records = parseCSV(content);
   
-  // 跳过第一行（表头）
-  const dataLines = lines.slice(1);
+  // 跳过第一条记录（表头）
+  const dataRecords = records.slice(1);
   
   const compoundsMap = new Map<string, CompoundRecord>();
   
-  for (const line of dataLines) {
-    if (!line.trim()) continue;
-    
-    const fields = parseCSVLine(line);
+  for (const fields of dataRecords) {
+    if (!fields || fields.length < 40) continue;
     
     // 提取关键字段
     const commonName = fields[3]?.trim() || '';    // Common Name (列4)
@@ -230,17 +256,16 @@ export function loadTransitionsFromCSV(casNumbers: string[]): TransitionRecord[]
   }
   
   const content = fs.readFileSync(csvPath, 'utf-8');
-  const lines = content.split('\n');
+  const records = parseCSV(content);
   
   // 规范化 CAS 号（移除横杠）
   const normalizedCAS = casNumbers.map(cas => cas.replace(/[-\s]/g, ''));
   
   const transitions: TransitionRecord[] = [];
   
-  for (const line of lines.slice(1)) { // 跳过表头
-    if (!line.trim()) continue;
+  for (const fields of records.slice(1)) { // 跳过表头
+    if (!fields || fields.length < 35) continue;
     
-    const fields = parseCSVLine(line);
     const casNoDashes = fields[7]?.trim();
     
     // 检查是否在查询列表中
