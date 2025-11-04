@@ -91,10 +91,10 @@ export function loadCompoundDatabase(): CompoundRecord[] {
     
     const fields = parseCSVLine(line);
     
-    // 提取关键字段（注意：CSV 有 3 个空列在开头）
-    const commonName = fields[3]?.trim() || '';
-    const casNoDashes = fields[7]?.trim() || '';
-    const formalCAS = fields[22]?.trim() || '';
+    // 提取关键字段
+    const commonName = fields[3]?.trim() || '';    // Common Name (列4)
+    const casNoDashes = fields[7]?.trim() || '';   // CAS without dashes (列8)
+    const formalCAS = fields[17]?.trim() || '';    // Formal CAS # (列18)
     
     // 跳过空记录
     if (!commonName) continue;
@@ -105,22 +105,22 @@ export function loadCompoundDatabase(): CompoundRecord[] {
         commonName,
         formalCAS: formalCAS || `${casNoDashes.slice(0, 4)}-${casNoDashes.slice(4, 6)}-${casNoDashes.slice(6)}`,
         casNoDashes,
-        chineseName: fields[35]?.trim() || '',        // 修正：中文名称在第 36 列（数组索引35）
-        molecularFormula: fields[4]?.trim() || '',
-        molecularWeight: parseFloat(fields[5]) || 0,
-        classification1: fields[8]?.trim() || '',
-        classification2: fields[9]?.trim() || '',
+        chineseName: fields[34]?.trim() || '',        // Chinese Name (列35)
+        molecularFormula: fields[4]?.trim() || '',    // Molecular Formula (列5)
+        molecularWeight: parseFloat(fields[5]) || 0,  // Molecular Weight (列6)
+        classification1: fields[8]?.trim() || '',     // Classification 1 (列9)
+        classification2: fields[9]?.trim() || '',     // Classification 2 (列10)
         // RI 和 RT 数据
-        ri_CF40: parseFloat(fields[11]) || null,
-        rt_CF40: parseFloat(fields[10]) || null,
-        ri_CP40: parseFloat(fields[14]) || null,
-        rt_CP40: parseFloat(fields[12]) || null,
-        ri_CF20: parseFloat(fields[18]) || null,
-        rt_CF20: parseFloat(fields[16]) || null,
-        ri_CF5x15: null, // 需要确认列位置
-        rt_CF5x15: parseFloat(fields[20]) || null,
-        synonyms: fields[42]?.trim() || '',
-        japaneseName: fields[37]?.trim() || '',      // 修正：日文名称在第 38 列（数组索引37）
+        ri_CF40: parseFloat(fields[11]) || null,      // RI CF 40-min (列12)
+        rt_CF40: parseFloat(fields[10]) || null,      // RT CF 40-min (列11)
+        ri_CP40: parseFloat(fields[13]) || null,      // RI CP 40-min (列14)
+        rt_CP40: parseFloat(fields[12]) || null,      // RT CP 40-min (列13)
+        ri_CF20: parseFloat(fields[17]) || null,      // RI CF 20-min (列18)
+        rt_CF20: parseFloat(fields[14]) || null,      // RT CF 20-min (列15)
+        ri_CF5x15: parseFloat(fields[19]) || null,    // RI CF 5x15 (列20)
+        rt_CF5x15: parseFloat(fields[16]) || null,    // RT CF 5x15 (列17)
+        synonyms: fields[42]?.trim() || '',           // Synonyms (列43)
+        japaneseName: fields[36]?.trim() || '',       // Japanese Name (列37)
       };
       
       compoundsMap.set(commonName, record);
@@ -246,13 +246,13 @@ export function loadTransitionsFromCSV(casNumbers: string[]): TransitionRecord[]
     // 检查是否在查询列表中
     if (!normalizedCAS.includes(casNoDashes)) continue;
     
-    const commonName = fields[3]?.trim() || '';
-    const formalCAS = fields[22]?.trim() || '';
-    const precursorIon = parseFloat(fields[26]) || 0;    // Precursor Ion (列27)
-    const productIon = parseFloat(fields[28]) || 0;      // Product Ion (列29)
-    const collisionEnergy = parseFloat(fields[31]) || 0; // CE (列32)
-    const quantQual = fields[37]?.trim() || '';           // Quant/Qual (列38)
-    const relativeIntensity = fields[36]?.trim() || '';   // Relative Intensity (列37)
+    const commonName = fields[18]?.trim() || '';          // Common Name (列19)
+    const formalCAS = fields[17]?.trim() || '';           // Formal CAS # (列18)
+    const precursorIon = parseFloat(fields[21]) || 0;     // Precursor Ion (列22)
+    const productIon = parseFloat(fields[23]) || 0;       // Product Ion (列24)
+    const collisionEnergy = parseFloat(fields[26]) || 0;  // CE (列27)
+    const quantQual = fields[32]?.trim() || '';           // Quant/Qual (列33)
+    const relativeIntensity = fields[31]?.trim() || '';   // Relative Intensity (列32)
     
     if (precursorIon > 0 && productIon > 0) {
       transitions.push({
