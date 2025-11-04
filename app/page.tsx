@@ -10,8 +10,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Download, AlertCircle, CheckCircle2, Upload, FileText, Info, Zap, HelpCircle, Settings, FileDown } from 'lucide-react';
+import { Download, AlertCircle, CheckCircle2, Upload, FileText, Info, Zap, HelpCircle, Settings, FileDown, User, LogOut, LogIn } from 'lucide-react';
 import { ResultsTable } from '@/components/features/ResultsTable';
+import { LoginDialog } from '@/components/features/LoginDialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
@@ -53,6 +55,19 @@ export default function Home() {
   
   // === GC 方法导出 v1.3 ===
   const [selectedMethodForExport, setSelectedMethodForExport] = useState<string>('');
+
+  // === 用户登录状态 ===
+  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+
+  function handleLogin(userData: { username: string; email: string }) {
+    setUser(userData);
+    setShowLoginDialog(false);
+  }
+
+  function handleLogout() {
+    setUser(null);
+  }
 
   function markStepCompleted(stepToMark: Step) {
     if (!completedSteps.includes(stepToMark)) {
@@ -401,6 +416,44 @@ C35,12.070`;
               <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
                 <Settings className="h-5 w-5" />
               </Button>
+              
+              {/* 用户登录/菜单 */}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10 gap-2">
+                      <User className="h-5 w-5" />
+                      <span className="hidden md:inline">{user.username}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>我的账户</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem disabled>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>{user.email}</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>我的方法</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>退出登录</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  variant="ghost" 
+                  className="text-primary-foreground hover:bg-primary-foreground/10 gap-2"
+                  onClick={() => setShowLoginDialog(true)}
+                >
+                  <LogIn className="h-5 w-5" />
+                  <span className="hidden md:inline">登录</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -1250,6 +1303,13 @@ C35,12.070`;
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* 登录对话框 */}
+      <LoginDialog 
+        open={showLoginDialog} 
+        onOpenChange={setShowLoginDialog}
+        onLogin={handleLogin}
+      />
     </div>
   );
 }
