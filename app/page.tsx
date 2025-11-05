@@ -13,6 +13,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { Download, AlertCircle, CheckCircle2, Upload, FileText, Info, Zap, HelpCircle, Settings, FileDown, User, LogOut, LogIn } from 'lucide-react';
 import { ResultsTable } from '@/components/features/ResultsTable';
 import { LoginDialog } from '@/components/features/LoginDialog';
+import { Hero } from '@/components/features/Hero';
+import { ProductPreview } from '@/components/features/ProductPreview';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -405,41 +407,50 @@ C35,12.070`;
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Minimal Navigation Header */}
-      <header className="bg-white border-b border-gray-200 py-3 px-6 shadow-sm">
-        <div className="w-full max-w-full">
+      <header className="bg-gradient-to-b from-blue-50 to-transparent border-b border-gray-200 py-4 px-6">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center justify-between">
-            {/* Left: Logo and Brand */}
+            {/* Left: Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">M</span>
               </div>
-              <h1 className="text-lg font-semibold text-gray-900">
-                MassHunter GC-QQQ Method Generator
-              </h1>
             </div>
 
-            {/* Right: Navigation Links */}
-            <nav className="flex items-center gap-2">
+            {/* Center: Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1">
               <Button 
                 variant="ghost" 
-                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                className="text-gray-700 hover:text-gray-900 hover:bg-white/50"
               >
-                Docs
+                Product
               </Button>
               <Button 
                 variant="ghost" 
-                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                className="text-gray-700 hover:text-gray-900 hover:bg-white/50"
               >
-                Pricing
+                Features
               </Button>
-              
-              <Separator orientation="vertical" className="h-6 mx-1" />
-              
-              {/* User Menu or Sign in */}
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-gray-900 hover:bg-white/50"
+              >
+                Marketplace
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="text-gray-700 hover:text-gray-900 hover:bg-white/50"
+              >
+                Company
+              </Button>
+            </nav>
+
+            {/* Right: Auth Buttons */}
+            <div className="flex items-center gap-3">
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 gap-2">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900 hover:bg-white/50 gap-2">
                       <User className="h-4 w-4" />
                       <span className="hidden md:inline">{user.username}</span>
                     </Button>
@@ -465,26 +476,25 @@ C35,12.070`;
               ) : (
                 <Button 
                   variant="ghost" 
-                  className="text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  className="text-gray-700 hover:text-gray-900 hover:bg-white/50"
                   onClick={() => setShowLoginDialog(true)}
                 >
-                  Sign in
+                  Log in →
                 </Button>
               )}
-              
-              <Button 
-                className="bg-primary hover:bg-primary/90 text-white"
-                onClick={() => !user && setShowLoginDialog(true)}
-              >
-                Try now
-              </Button>
-            </nav>
+            </div>
           </div>
         </div>
       </header>
 
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Product Preview Section */}
+      <ProductPreview />
+
       {/* Desktop-Optimized Two-Column Layout */}
-      <div className="flex-1 flex">
+      <div id="app-section" className="flex-1 flex">
         <div className="w-full flex gap-4 px-4 py-4">
           {/* Left Sidebar - Category Navigation - Narrower for desktop */}
           <aside className="w-64 flex-shrink-0">
