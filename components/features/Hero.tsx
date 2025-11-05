@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CheckCircle2, TrendingUp } from 'lucide-react';
 
 export function Hero() {
+  const router = useRouter();
   const [compoundInput, setCompoundInput] = useState('');
   const [coverageChecked, setCoverageChecked] = useState(false);
   const [coverageStats, setCoverageStats] = useState({ supported: 0, unsupported: 0, fuzzy: 0, rate: 0 });
@@ -16,21 +18,35 @@ export function Hero() {
     const lines = compoundInput.split('\n').filter(line => line.trim());
     if (lines.length === 0) return;
     
-    // 模拟统计
-    const supported = Math.floor(lines.length * 0.92);
-    const fuzzy = Math.floor(lines.length * 0.05);
-    const unsupported = lines.length - supported - fuzzy;
+    // 模拟统计（包含duplicates）
+    const supported = Math.floor(lines.length * 0.90);
+    const unresolved = Math.floor(lines.length * 0.07);
+    const duplicates = Math.floor(lines.length * 0.03);
     const rate = Math.round((supported / lines.length) * 100);
     
-    setCoverageStats({ supported, unsupported, fuzzy, rate });
+    setCoverageStats({ supported, unsupported: unresolved, fuzzy: duplicates, rate });
     setCoverageChecked(true);
   }
 
+  function handleViewUnmatched() {
+    alert('查看未命中的化合物列表\n\n这个功能将显示所有未能识别的化合物，帮助您了解需要补充的数据。');
+  }
+
+  function handleLoadSampleCSV() {
+    const sampleData = `Chlorpyrifos
+2921-88-2
+Malathion
+Fenitrothion
+121-75-5
+Parathion
+Diazinon
+Atrazine`;
+    setCompoundInput(sampleData);
+    setCoverageChecked(false);
+  }
+
   function handleTryWithList() {
-    const appSection = document.getElementById('app-section');
-    if (appSection) {
-      appSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    router.push('/generator');
   }
 
   return (
@@ -84,26 +100,43 @@ export function Hero() {
               </Button>
             </div>
 
-            {/* Coverage Results */}
+            {/* Coverage Results - Mini Result Bar */}
             {coverageChecked && (
-              <div className="flex items-center justify-center gap-4 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-lg">
+                <div className="flex items-center gap-4">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="font-semibold text-green-700">
+                      Supported {coverageStats.supported}
+                    </span>
+                    <span className="text-gray-400">·</span>
+                    <span className="font-medium text-orange-600">
+                      Unresolved {coverageStats.unsupported}
+                    </span>
+                    <span className="text-gray-400">·</span>
+                    <span className="font-medium text-gray-600">
+                      Duplicates {coverageStats.fuzzy}
+                    </span>
+                  </div>
+                </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-900">
-                    Supported: {coverageStats.supported}
-                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs border-orange-200 hover:bg-orange-50"
+                    onClick={handleViewUnmatched}
+                  >
+                    查看未命中
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs border-blue-200 hover:bg-blue-50"
+                    onClick={handleLoadSampleCSV}
+                  >
+                    导入示例 CSV
+                  </Button>
                 </div>
-                <div className="text-sm text-gray-600">
-                  Fuzzy: {coverageStats.fuzzy}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Unsupported: {coverageStats.unsupported}
-                </div>
-                {coverageStats.rate >= 90 && (
-                  <Badge className="bg-green-600 text-white font-semibold">
-                    Coverage: {coverageStats.rate}%+
-                  </Badge>
-                )}
               </div>
             )}
 

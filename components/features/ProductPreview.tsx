@@ -2,11 +2,12 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Clock, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CheckCircle2, Clock, FileText, Download } from 'lucide-react';
 
 export function ProductPreview() {
   return (
-    <section className="relative py-16 px-6 bg-white">
+    <section className="product-preview-section relative py-16 px-6 bg-white">
       <div className="container mx-auto max-w-7xl">
         {/* Product Mockup */}
         <div className="relative">
@@ -78,8 +79,20 @@ export function ProductPreview() {
                 {/* Middle Panel - Transitions Table */}
                 <Card className="p-6 bg-white lg:col-span-2 overflow-auto">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-900">Generated Transitions</h3>
-                    <Badge variant="secondary">382 transitions</Badge>
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-semibold text-gray-900">Generated Transitions</h3>
+                      <Badge variant="secondary">382 transitions</Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" className="text-xs">
+                        <Download className="h-3 w-3 mr-1" />
+                        Sample CSV
+                      </Button>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        <Download className="h-3 w-3 mr-1" />
+                        Method TXT
+                      </Button>
+                    </div>
                   </div>
                   
                   {/* Table */}

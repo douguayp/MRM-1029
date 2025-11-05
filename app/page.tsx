@@ -14,7 +14,13 @@ import { Download, AlertCircle, CheckCircle2, Upload, FileText, Info, Zap, HelpC
 import { ResultsTable } from '@/components/features/ResultsTable';
 import { LoginDialog } from '@/components/features/LoginDialog';
 import { Hero } from '@/components/features/Hero';
+import { ValueProps } from '@/components/features/ValueProps';
 import { ProductPreview } from '@/components/features/ProductPreview';
+import { Pricing } from '@/components/features/Pricing';
+import { TrustSection } from '@/components/features/TrustSection';
+import { FAQ } from '@/components/features/FAQ';
+import { FooterCTA } from '@/components/features/FooterCTA';
+import { Footer } from '@/components/features/Footer';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -489,6 +495,9 @@ C35,12.070`;
 
       {/* Hero Section */}
       <Hero />
+
+      {/* Value Propositions - 3 Key Features */}
+      <ValueProps />
 
       {/* Product Preview Section */}
       <ProductPreview />
@@ -1296,6 +1305,21 @@ C35,12.070`;
         {/* End Container */}
       </div>
       {/* End Two-Column Layout */}
+
+      {/* Pricing Section */}
+      <Pricing />
+
+      {/* Trust & Transparency */}
+      <TrustSection />
+
+      {/* FAQ Section */}
+      <FAQ />
+
+      {/* Final CTA */}
+      <FooterCTA />
+
+      {/* Footer */}
+      <Footer />
 
       <Sheet open={showGapReport} onOpenChange={setShowGapReport}>
         <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
