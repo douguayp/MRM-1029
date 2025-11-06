@@ -3,12 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { CheckCircle2, TrendingUp } from 'lucide-react';
+import { CheckCircle2, TrendingUp, Info } from 'lucide-react';
 
 export function Hero() {
-  const router = useRouter();
   const [compoundInput, setCompoundInput] = useState('');
   const [coverageChecked, setCoverageChecked] = useState(false);
   const [coverageStats, setCoverageStats] = useState({ supported: 0, unsupported: 0, fuzzy: 0, rate: 0 });
@@ -46,7 +45,7 @@ Atrazine`;
   }
 
   function handleTryWithList() {
-    router.push('/generator');
+    window.location.href = '/generator';
   }
 
   return (
@@ -76,6 +75,21 @@ Atrazine`;
               <TrendingUp className="h-4 w-4 mr-2 text-blue-600" />
               RI coverage 92% (C8–C35)
             </Badge>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 hover:bg-amber-200 transition-colors">
+                    <Info className="h-3.5 w-3.5 text-amber-700" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs bg-amber-50 border-amber-200 text-amber-900">
+                  <p className="text-xs">
+                    <strong>RI limitation:</strong> Works best for non-polar to moderately polar compounds. 
+                    <a href="#faq" className="underline ml-1 hover:text-amber-700">See FAQ for details</a>
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* Input Area + Coverage Check */}

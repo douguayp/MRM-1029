@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Family, GenerationMode, NormalizedCompound, BuildRow, AlkanePoint } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,10 +9,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Download, AlertCircle, CheckCircle2, FileText, Info, FileDown, User, LogOut, ArrowLeft } from 'lucide-react';
+import { Download, AlertCircle, CheckCircle2, FileText, Info, FileDown } from 'lucide-react';
 import { ResultsTable } from '@/components/features/ResultsTable';
-import { LoginDialog } from '@/components/features/LoginDialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
@@ -21,8 +18,7 @@ import { StepType } from '@/components/features/StepIndicator';
 
 type Step = StepType;
 
-export default function GeneratorPage() {
-  const router = useRouter();
+export default function Generator() {
   const [family, setFamily] = useState<Family>('Pesticides');
   const [step, setStep] = useState<Step>('input');
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
@@ -39,19 +35,6 @@ export default function GeneratorPage() {
   const [ceDelta, setCeDelta] = useState(4);
   const [showGapReport, setShowGapReport] = useState(false);
   const [selectedMethodForExport, setSelectedMethodForExport] = useState<string>('');
-  
-  // 用户登录状态
-  const [user, setUser] = useState<{ username: string; email: string } | null>(null);
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
-
-  function handleLogin(userData: { username: string; email: string }) {
-    setUser(userData);
-    setShowLoginDialog(false);
-  }
-
-  function handleLogout() {
-    setUser(null);
-  }
 
   function markStepCompleted(stepToMark: Step) {
     if (!completedSteps.includes(stepToMark)) {
@@ -355,77 +338,27 @@ C35,12.070`;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 py-3 px-6 shadow-sm">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center justify-between">
-            {/* Left: Back button + Logo */}
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/')}
-                className="gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Home
-              </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
-                </div>
-                <h1 className="text-base font-semibold text-gray-900">
-                  Method Generator
-                </h1>
-              </div>
+      {/* Simple Header */}
+      <header className="bg-white border-b border-gray-200 py-3 px-6">
+        <div className="container mx-auto max-w-7xl flex items-center justify-between">
+          <a href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">M</span>
             </div>
-
-            {/* Right: User menu */}
-            <div className="flex items-center gap-3">
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="gap-2">
-                      <User className="h-4 w-4" />
-                      <span className="hidden md:inline">{user.username}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>我的账户</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem disabled>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>{user.email}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem disabled>
-                      <FileText className="mr-2 h-4 w-4" />
-                      <span>我的方法</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>退出登录</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Button 
-                  variant="outline"
-                  onClick={() => setShowLoginDialog(true)}
-                >
-                  Sign in
-                </Button>
-              )}
-            </div>
-          </div>
+            <h1 className="text-lg font-semibold text-gray-900">
+              MassHunter GC-QQQ Method Generator
+            </h1>
+          </a>
+          <Button variant="outline" onClick={() => window.location.href = '/'}>
+            返回首页
+          </Button>
         </div>
       </header>
 
-      {/* Main Content - Generator */}
+      {/* Main Content */}
       <div className="flex-1 flex">
         <div className="w-full flex gap-4 px-4 py-4">
-          {/* Left Sidebar - Categories */}
+          {/* Left Sidebar */}
           <aside className="w-64 flex-shrink-0">
             <div className="sticky top-6">
               <Card className="shadow-sm">
@@ -483,12 +416,11 @@ C35,12.070`;
             </div>
           </aside>
 
-          {/* Main Content Area - Steps */}
+          {/* Right Main Content */}
           <main className="flex-1 min-w-0">
-            {/* Process Flow Diagram */}
+            {/* Step Indicator */}
             <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-6">
-                {/* Step 1 */}
                 <button 
                   onClick={() => completedSteps.includes('input') && goToStep('input')}
                   className={`flex items-center gap-3 flex-1 text-left ${
@@ -517,7 +449,6 @@ C35,12.070`;
                   <path stroke="currentColor" strokeWidth="2" d="M0 8 L28 8 M22 2 L28 8 L22 14" />
                 </svg>
 
-                {/* Step 2 */}
                 <button 
                   onClick={() => completedSteps.includes('path') && goToStep('path')}
                   className={`flex items-center gap-3 flex-1 text-left ${
@@ -546,7 +477,6 @@ C35,12.070`;
                   <path stroke="currentColor" strokeWidth="2" d="M0 8 L28 8 M22 2 L28 8 L22 14" />
                 </svg>
 
-                {/* Step 3 */}
                 <div className="flex items-center gap-3 flex-1">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
                     completedSteps.includes('configure') ? 'bg-green-500 text-white' :
@@ -564,9 +494,9 @@ C35,12.070`;
               </div>
             </div>
 
-            {/* Step Content - Input/Path/Configure sections would go here */}
-            {/* For brevity, I'll just show the structure - you can copy the rest from the original page.tsx */}
+            {/* Step Content */}
             <div className="space-y-6">
+              {/* STEP 1: INPUT */}
               {step === 'input' && (
                 <div className="space-y-6">
                   <Card className="rounded-2xl shadow-sm">
@@ -674,20 +604,512 @@ C35,12.070`;
                 </div>
               )}
 
-              {/* Add other steps (path, configure) here - copy from original page.tsx */}
-              {/* For brevity, this is just a placeholder */}
+              {/* STEP 2: PATH */}
               {step === 'path' && (
-                <div className="text-center py-12">
-                  <p className="text-gray-600">Step 2: Path selection (copy from original page.tsx)</p>
-                  <Button onClick={() => { markStepCompleted('path'); handleBuild(); goToStep('configure'); }}>
-                    Continue
-                  </Button>
+                <div className="space-y-6">
+                  <Card className="rounded-2xl shadow-sm">
+                    <CardContent className="pt-6 space-y-6">
+                      <RadioGroup value={mode} onValueChange={(v) => setMode(v as GenerationMode)}>
+                        <div
+                          className={`flex items-start space-x-3 rounded-2xl border p-4 cursor-pointer transition ${
+                            mode === 'msdOnly' ? 'border-blue-500 ring-2 ring-blue-500' : 'border-border hover:shadow'
+                          }`}
+                          onClick={() => setMode('msdOnly')}
+                        >
+                          <RadioGroupItem value="msdOnly" id="msdOnly" className="mt-1" />
+                          <div className="flex-1">
+                            <Label htmlFor="msdOnly" className="text-xl font-semibold cursor-pointer">
+                              仅 MSD 方法（跳过 GC）
+                            </Label>
+                            <p className="text-lg text-gray-600 mt-2">
+                              先生成 Q1/Q3/CE，RT 可稍后补
+                            </p>
+                          </div>
+                        </div>
+
+                        <div
+                          className={`flex items-start space-x-3 rounded-2xl border p-4 cursor-pointer transition ${
+                            mode === 'withGC' ? 'border-blue-500 ring-2 ring-blue-500' : 'border-border hover:shadow'
+                          }`}
+                          onClick={() => setMode('withGC')}
+                        >
+                          <RadioGroupItem value="withGC" id="withGC" className="mt-1" />
+                          <div className="flex-1">
+                            <Label htmlFor="withGC" className="text-xl font-semibold cursor-pointer">
+                              含 GC 方法（推荐）
+                            </Label>
+                            <p className="text-lg text-gray-600 mt-2">
+                              选择 GC 方法 + 上传烷烃获取 RT
+                            </p>
+                          </div>
+                        </div>
+                      </RadioGroup>
+
+                      {mode === 'withGC' && (
+                        <div className="pt-4 border-t">
+                          <h3 className="text-xl font-semibold mb-4">选择 GC 方法（含 GC 时可见）</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            {/* Method 1: CF40-LOCKABLE */}
+                            <div
+                              onClick={() => setMethodId('CF40-LOCKABLE')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'CF40-LOCKABLE'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">
+                                恒流模式（约40min）
+                              </div>
+                              <div className="text-sm text-gray-500 mb-3 italic">CF-40 Equivalent (~40.5 min), Series 2×15 m, Backflush-capable</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (柱1) + 1.2 mL/min (柱2)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (Hot 280°C)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ Post-run</span> (5 min @ 310°C)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    60°C(1)→40°C/min→120; 5°C/min→310
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~40.5 min
+                                </div>
+                                <div className="text-sm text-gray-500 pt-2 border-t mt-2">
+                                  <span className="font-semibold">建议RTL:</span> Chlorpyrifos-methyl（CAS：5598-13-0）：18.111 min
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Method 2: STD-CF-40 */}
+                            <div
+                              onClick={() => setMethodId('STD-CF-40')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'STD-CF-40'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">STD-CF-40</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Flow</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~40 min | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Method 3: FAST-CF-20 */}
+                            <div
+                              onClick={() => setMethodId('FAST-CF-20')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'FAST-CF-20'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">FAST-CF-20</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Fast Screening — Constant Flow</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 15 m × 0.25 mm × 0.25 μm
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.2 mL/min (恒流)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 0.75 min)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    70°C(0.5)→40°C/min→180; 10°C/min→300(2.5)
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~20 min | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Method 4: CP-40 */}
+                            <div
+                              onClick={() => setMethodId('CP-40')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'CP-40'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CP-40</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Pressure</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 10.0 psi (恒压)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  运行时间: ~40 min | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Method 5: CF-5x15 */}
+                            <div
+                              onClick={() => setMethodId('CF-5x15')}
+                              className={`rounded-2xl border p-5 cursor-pointer transition ${
+                                methodId === 'CF-5x15'
+                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+                                  : 'border-border hover:shadow'
+                              }`}
+                            >
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CF-5x15</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Constant Flow with Backflush (series 2×15 m)</div>
+                              <div className="space-y-2 text-gray-600">
+                                <div className="text-base">
+                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">进样:</span> Splitless (280°C, 0.75 min)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ 开启</span> (5 min @ 310°C)
+                                </div>
+                                <div className="text-base border-t pt-2 mt-2">
+                                  <span className="font-semibold">温度程序:</span>
+                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
+                                    60°C(1)→40°C/min→120; 5°C/min→310
+                                  </div>
+                                </div>
+                                <div className="text-base font-medium text-blue-600 pt-2">
+                                  适用于复杂基质 | RI 支持: C8–C35
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex justify-between">
+                    <Button variant="outline" size="lg" onClick={() => goToStep('input')}>
+                      上一步
+                    </Button>
+                    <Button
+                      size="lg"
+                      onClick={() => {
+                        markStepCompleted('path');
+                        handleBuild();
+                        goToStep('configure');
+                      }}
+                      disabled={loading}
+                    >
+                      {loading ? '构建中...' : '下一步'}
+                    </Button>
+                  </div>
                 </div>
               )}
 
+              {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
-                <div className="text-center py-12">
-                  <p className="text-gray-600">Step 3: Configure and export (copy from original page.tsx)</p>
+                <div className="space-y-6">
+                  {mode === 'withGC' && !calibrated && (
+                    <Alert className="border-orange-200 bg-orange-50/50 rounded-2xl">
+                      <AlertCircle className="h-6 w-6 text-orange-600" />
+                      <AlertDescription className="text-lg">
+                        <strong>[含 GC 状态条]</strong> 未标定 | 上传 C7–C30 可获得 RT_pred<br/>
+                        <span className="text-base text-gray-600">覆盖范围: –</span>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    <div className="lg:col-span-3 md:col-span-12 space-y-4">
+                      <Card className="shadow-sm">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg">控制面板</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3 text-base">
+                          <div className="flex items-center justify-between">
+                            <label className="font-medium">三点 CE 展开</label>
+                            <Switch checked={expandCE} onCheckedChange={setExpandCE} />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="font-medium block">Δ (eV):</label>
+                            <Input
+                              type="number"
+                              value={ceDelta}
+                              onChange={(e) => setCeDelta(parseInt(e.target.value) || 4)}
+                              className="w-20"
+                              min="2"
+                              max="6"
+                            />
+                          </div>
+                          <Separator />
+                          <div className="text-sm text-gray-600">
+                            方法：{methodId || 'MSD Only'}
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {mode === 'withGC' && (
+                        <Card className="shadow-sm">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-lg">RI 标定（正构烷烃 C8–C35）</CardTitle>
+                            <CardDescription className="text-sm">
+                              在当前 GC 方法下输入正构烷烃（C8–C35）的保留时间（RT）。系统将基于数据库提供的 RI（保留指数）完成 RI→RT 映射标定，并计算目标化合物的 预测保留时间 RT_pred 与建议时间窗。
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            {!calibrated ? (
+                              <>
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                                  <div className="text-xs text-blue-800 mb-1 font-semibold">格式说明：</div>
+                                  <div className="text-xs text-blue-700 space-y-0.5 font-mono">
+                                    <div>• 每行: 碳数, RT (如 C7, 0.85)</div>
+                                    <div>• 建议至少 5 个烷烃</div>
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="text-sm text-gray-700 font-medium block mb-1.5">
+                                    手动输入 RI 标定数据
+                                  </label>
+                                  <Textarea
+                                    placeholder={"C8,  2.466\nC9,  3.014\nC10, 3.513\nC11, 3.970"}
+                                    value={alkaneText}
+                                    onChange={(e) => setAlkaneText(e.target.value)}
+                                    className="h-24 font-mono text-xs"
+                                  />
+                                </div>
+                                <div className="flex items-center gap-3 flex-wrap">
+                                  <span className="text-sm text-gray-600">或 上传 CSV</span>
+                                  <Button variant="outline" size="sm" asChild>
+                                    <label className="cursor-pointer">
+                                      选择文件
+                                      <input
+                                        type="file"
+                                        accept=".csv,.txt"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (event) => {
+                                              const text = event.target?.result as string;
+                                              setAlkaneText(text);
+                                            };
+                                            reader.readAsText(file);
+                                          }
+                                        }}
+                                        className="hidden"
+                                      />
+                                    </label>
+                                  </Button>
+                                  <Button 
+                                    variant="link" 
+                                    size="sm" 
+                                    className="text-xs h-auto p-0"
+                                    onClick={handleDownloadAlkaneTemplate}
+                                  >
+                                    (模板下载)
+                                  </Button>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    onClick={handleCalibrate}
+                                    disabled={loading || !alkaneText.trim()}
+                                    size="sm"
+                                    className="flex-1"
+                                  >
+                                    应用标定
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => setAlkaneText('')}
+                                    size="sm"
+                                  >
+                                    清除
+                                  </Button>
+                                </div>
+                              </>
+                            ) : (
+                              <Alert className="border-green-200 bg-green-50">
+                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                <AlertDescription className="text-xs">标定已应用</AlertDescription>
+                              </Alert>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+
+                    <div className="lg:col-span-9 md:col-span-12">
+                      <Card className="rounded-2xl shadow-sm">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-xl">Generated Method Transitions</CardTitle>
+                            <div className="text-base text-gray-600">
+                              搜索/筛选/列显隐
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {rows.length > 0 ? (
+                            <>
+                              <div className="max-h-[600px] overflow-y-auto">
+                                <ResultsTable rows={rows} />
+                              </div>
+                              <div className="mt-4 text-lg text-gray-600 font-medium">
+                                合计: {rows.length} 行
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-center py-12 text-gray-500">
+                              <Info className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                              <p className="text-lg">暂无数据</p>
+                              <p className="text-base mt-2">请先完成前两步操作</p>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-4 border-t">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      onClick={() => goToStep('path')}
+                      className="gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      上一步
+                    </Button>
+                    <span className="text-sm text-gray-500">重新选择方法或参数</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Export Bar */}
+              {step === 'configure' && rows.length > 0 && (
+                <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-200 p-5 shadow-lg">
+                  <div className="container mx-auto max-w-6xl space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="text-lg font-semibold text-gray-700">
+                        导出 Transitions
+                      </div>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-lg text-gray-600 mr-2">选择格式：</span>
+                        <Button onClick={() => handleExport('generic')} variant="outline" size="lg" className="font-medium">
+                          Generic CSV
+                        </Button>
+                        <Button onClick={() => handleExport('masshunter')} variant="outline" size="lg" className="font-medium">
+                          Vendor-A Compatible
+                        </Button>
+                        <Button onClick={() => handleExport('both')} size="lg" className="font-medium">
+                          导出全部
+                        </Button>
+                        {unmatched.length > 0 && (
+                          <>
+                            <Separator orientation="vertical" className="h-6 mx-2" />
+                            <Button variant="link" size="default" onClick={() => setShowGapReport(true)} className="text-primary hover:text-primary/80 text-lg">
+                              查看缺口报告 ({unmatched.length})
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <Separator />
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="text-lg font-semibold text-gray-700">
+                        导出 GC 方法参数
+                      </div>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-lg text-gray-600 mr-2">选择方法：</span>
+                        <select
+                          value={selectedMethodForExport}
+                          onChange={(e) => setSelectedMethodForExport(e.target.value)}
+                          className="px-4 py-2 border border-gray-300 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          <option value="">-- 请选择 --</option>
+                          <option value="CF40-LOCKABLE">CF40-LOCKABLE (恒流模式约40min)</option>
+                          <option value="STD-CF-40">STD-CF-40 (标准分离~40min)</option>
+                          <option value="FAST-CF-20">FAST-CF-20 (快速筛查~20min)</option>
+                          <option value="CP-40">CP-40 (恒压模式~40min)</option>
+                          <option value="CF-5x15">CF-5x15 (快速5层~15min)</option>
+                        </select>
+                        <Button 
+                          onClick={handleExportMethod} 
+                          variant="default" 
+                          size="lg" 
+                          className="font-medium"
+                          disabled={!selectedMethodForExport}
+                        >
+                          <FileDown className="h-5 w-5 mr-2" />
+                          导出方法
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -736,13 +1158,6 @@ C35,12.070`;
           </div>
         </SheetContent>
       </Sheet>
-
-      {/* Login Dialog */}
-      <LoginDialog 
-        open={showLoginDialog} 
-        onOpenChange={setShowLoginDialog}
-        onLogin={handleLogin}
-      />
     </div>
   );
 }

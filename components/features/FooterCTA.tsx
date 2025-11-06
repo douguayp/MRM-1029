@@ -2,13 +2,10 @@
 
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 export function FooterCTA() {
-  const router = useRouter();
-  
-  function handleTryWithList() {
-    router.push('/generator');
+  function scrollToHero() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function scrollToPreview() {
@@ -32,14 +29,14 @@ export function FooterCTA() {
           <Button 
             size="lg"
             className="bg-white text-primary hover:bg-gray-100 h-14 px-8 text-base font-semibold"
-            onClick={handleTryWithList}
+            onClick={scrollToHero}
           >
             Try with my list
           </Button>
           <Button 
             size="lg"
             variant="outline"
-            className="border-2 border-white text-white hover:bg-white/10 h-14 px-8 text-base font-semibold"
+            className="border-2 border-white bg-white/10 text-white hover:bg-white hover:text-primary h-14 px-8 text-base font-semibold backdrop-blur-sm"
             onClick={scrollToPreview}
           >
             See sample output

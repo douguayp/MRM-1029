@@ -40,7 +40,7 @@ export function Footer() {
               </li>
               <li>
                 <Button variant="link" className="p-0 h-auto text-gray-400 hover:text-white">
-                  References
+                  Data Source
                 </Button>
               </li>
               <li>

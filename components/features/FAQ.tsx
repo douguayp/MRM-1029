@@ -9,7 +9,7 @@ import {
 
 export function FAQ() {
   return (
-    <section className="py-20 px-6 bg-white">
+    <section id="faq" className="py-20 px-6 bg-white">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
@@ -22,9 +22,17 @@ export function FAQ() {
               RT 预测的前提与误差范围？
             </AccordionTrigger>
             <AccordionContent className="text-gray-600">
-              RT预测基于RI（保留指数）标定。需要使用C8–C35正构烷烃在当前GC方法下进行标定。
-              典型误差范围：±0.2–0.5 min（取决于化合物极性、柱况、标定质量）。
-              建议设置RT窗口为预测值±0.3 min以确保覆盖。
+              <p className="mb-3">
+                RT预测基于RI（保留指数）标定。需要使用C8–C35正构烷烃在当前GC方法下进行标定。
+                典型误差范围：±0.2–0.5 min（取决于化合物极性、柱况、标定质量）。
+                建议设置RT窗口为预测值±0.3 min以确保覆盖。
+              </p>
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-900">
+                  <strong>⚠️ RI 方法的适用范围：</strong> RI-based RT prediction works best for non-polar to moderately polar compounds. 
+                  Highly polar or thermally labile compounds may show larger deviations. Always verify with standards for critical analytes.
+                </p>
+              </div>
             </AccordionContent>
           </AccordionItem>
 
