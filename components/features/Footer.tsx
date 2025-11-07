@@ -101,7 +101,7 @@ export function Footer() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">M</span>
             </div>
-            <span className="text-sm text-gray-400">© 2024 MassHunter GC-QQQ Method Generator</span>
+            <span className="text-sm text-gray-400">© 2024 MRM Method Builder</span>
           </div>
           <div className="text-sm text-gray-500">
             Built for analytical chemists · Open source · Community driven

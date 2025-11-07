@@ -231,7 +231,7 @@ export function LoginDialog({ open, onOpenChange, onLogin }: LoginDialogProps) {
         {viewMode === 'auth' ? (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">欢迎使用 GC-QQQ Method Generator</DialogTitle>
+              <DialogTitle className="text-2xl font-bold">欢迎使用 MRM Method Builder</DialogTitle>
               <DialogDescription>
                 登录以保存您的方法配置和访问更多功能
               </DialogDescription>

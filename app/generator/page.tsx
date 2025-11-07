@@ -346,7 +346,7 @@ C35,12.070`;
               <span className="text-white font-bold text-xl">M</span>
             </div>
             <h1 className="text-lg font-semibold text-gray-900">
-              MassHunter GC-QQQ Method Generator
+              MRM Method Builder
             </h1>
           </a>
           <Button variant="outline" onClick={() => window.location.href = '/'}>

@@ -2,10 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState } from 'react';
-import { CheckCircle2, TrendingUp, Info } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export function Hero() {
   const [compoundInput, setCompoundInput] = useState('');
@@ -49,51 +47,18 @@ Atrazine`;
   }
 
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 px-6">
+    <section className="relative bg-primary py-20 px-6">
       <div className="container mx-auto max-w-5xl">
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-8">
           {/* Main Heading */}
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight">
             Build GC-QQQ MRM methods
             <br />
             from your list — in minutes
           </h1>
 
-          {/* Subheading */}
-          <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Paste names or CAS → pick Standard / Fast GC preset → RI-based RT prediction → 
-            get ready-to-run transitions (Q1/Q3/CE, Quant/Qual, RT window) with one click.
-          </p>
-
-          {/* Coverage Badge */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium">
-              <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
-              Now supporting 3,400+ compounds
-            </Badge>
-            <Badge variant="secondary" className="px-4 py-1.5 text-sm font-medium">
-              <TrendingUp className="h-4 w-4 mr-2 text-blue-600" />
-              RI coverage 92% (C8–C35)
-            </Badge>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 hover:bg-amber-200 transition-colors">
-                    <Info className="h-3.5 w-3.5 text-amber-700" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs bg-amber-50 border-amber-200 text-amber-900">
-                  <p className="text-xs">
-                    <strong>RI limitation:</strong> Works best for non-polar to moderately polar compounds. 
-                    <a href="#faq" className="underline ml-1 hover:text-amber-700">See FAQ for details</a>
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
           {/* Input Area + Coverage Check */}
-          <div className="pt-6 max-w-3xl mx-auto space-y-4">
+          <div className="max-w-3xl mx-auto space-y-4">
             <div className="flex items-start gap-3">
               <Textarea
                 placeholder="Paste compound names or CAS (one per line)…"
@@ -102,11 +67,11 @@ Atrazine`;
                   setCompoundInput(e.target.value);
                   setCoverageChecked(false);
                 }}
-                className="min-h-[120px] px-4 py-3 text-base bg-white border-2 border-gray-200 focus-visible:ring-2 focus-visible:ring-primary resize-none"
+                className="min-h-[90px] px-4 py-3 text-base bg-white border-2 border-white/20 focus-visible:ring-2 focus-visible:ring-white resize-none"
               />
               <Button 
                 variant="outline"
-                className="h-[120px] px-6 border-2 border-gray-200 hover:border-primary hover:bg-primary/5 font-medium whitespace-nowrap"
+                className="h-[90px] px-6 border-2 border-white text-white hover:bg-white hover:text-primary font-medium whitespace-nowrap transition-colors"
                 onClick={handleCheckCoverage}
                 disabled={!compoundInput.trim()}
               >
@@ -116,7 +81,7 @@ Atrazine`;
 
             {/* Coverage Results - Mini Result Bar */}
             {coverageChecked && (
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-white/95 backdrop-blur-sm border-2 border-white/20 rounded-lg shadow-lg">
                 <div className="flex items-center gap-4">
                   <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
                   <div className="flex items-center gap-3 text-sm">
@@ -137,7 +102,7 @@ Atrazine`;
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs border-orange-200 hover:bg-orange-50"
+                    className="text-xs border-orange-300 text-orange-600 hover:bg-orange-50"
                     onClick={handleViewUnmatched}
                   >
                     查看未命中
@@ -145,7 +110,7 @@ Atrazine`;
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs border-blue-200 hover:bg-blue-50"
+                    className="text-xs border-primary text-primary hover:bg-primary/10"
                     onClick={handleLoadSampleCSV}
                   >
                     导入示例 CSV
@@ -153,18 +118,13 @@ Atrazine`;
                 </div>
               </div>
             )}
-
-            {/* Trust Microcopy */}
-            <p className="text-sm text-gray-500 text-center">
-              GC method presets · RI-based RT prediction · Auto-generated MRM transitions · CSV/TXT export
-            </p>
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex items-center justify-center gap-4 pt-4">
+          <div className="flex items-center justify-center gap-4">
             <Button 
               size="lg"
-              className="h-12 px-8 bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold"
+              className="h-12 px-8 bg-white text-primary hover:bg-white/90 text-base font-semibold shadow-lg"
               onClick={handleTryWithList}
             >
               Try with my list
@@ -172,7 +132,7 @@ Atrazine`;
             <Button 
               size="lg"
               variant="outline"
-              className="h-12 px-8 text-base font-medium border-2"
+              className="h-12 px-8 text-base font-medium border-2 border-white text-white hover:bg-white hover:text-primary transition-colors"
             >
               See sample output
             </Button>
