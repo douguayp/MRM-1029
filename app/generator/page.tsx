@@ -14,9 +14,8 @@ import { ResultsTable } from '@/components/features/ResultsTable';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { StepType } from '@/components/features/StepIndicator';
 
-type Step = StepType;
+type Step = 'input' | 'path' | 'configure';
 
 export default function Generator() {
   const [family, setFamily] = useState<Family>('Pesticides');
