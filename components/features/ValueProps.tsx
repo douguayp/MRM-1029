@@ -32,9 +32,9 @@ export function ValueProps() {
   ];
 
   return (
-    <section className="py-12 px-6 bg-gray-50">
+    <section className="pt-8 pb-20 px-6 bg-gray-50">
       <div className="container mx-auto max-w-6xl">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -42,25 +42,25 @@ export function ValueProps() {
                 key={index}
                 className={`group relative flex flex-col ${feature.cardBg} rounded-3xl border-0 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
               >
-                <div className="flex flex-col items-center text-center h-full p-6">
+                <div className="flex flex-col items-center text-center h-full p-8">
                   {/* 图标徽章 */}
-                  <div className="mb-4">
+                  <div className="mb-5">
                     <div
-                      className={`inline-flex items-center justify-center w-14 h-14 rounded-full ${feature.iconBg}`}
+                      className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${feature.iconBg}`}
                       role="img"
                       aria-label={feature.title}
                     >
-                      <Icon className={`w-7 h-7 ${feature.iconColor}`} strokeWidth={2} />
+                      <Icon className={`w-9 h-9 ${feature.iconColor}`} strokeWidth={2} />
                     </div>
                   </div>
 
                   {/* 标题 */}
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
                     {feature.title}
                   </h3>
 
                   {/* 描述文本 */}
-                  <p className="text-sm leading-relaxed text-gray-600">
+                  <p className="text-base leading-relaxed text-gray-600">
                     {feature.description}
                   </p>
                 </div>

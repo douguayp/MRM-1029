@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Navbar } from '@/components/shared/Navbar';
 
 export const metadata: Metadata = {
   title: 'MRM Method Builder – GC-MS/MS (QQQ) Transition Generator for Pesticides & Environmental Analytes',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

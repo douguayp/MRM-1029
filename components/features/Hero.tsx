@@ -86,7 +86,7 @@ export function Hero() {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center space-y-10">
           {/* Main Heading */}
-          <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight">
             Build GC-QQQ MRM methods
             <br />
             from your list — in minutes
