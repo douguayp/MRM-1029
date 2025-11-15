@@ -352,8 +352,8 @@ C35,12.070`;
             <div className="sticky top-6">
               <Card className="shadow-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Categories</CardTitle>
-                  {/*<CardDescription className="text-sm">Select a family</CardDescription>*/}
+                  <CardTitle className="text-lg">Analyte Categories</CardTitle>
+                  <CardDescription className="text-sm">Select an analyte category</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <nav className="space-y-1.5">
@@ -366,21 +366,31 @@ C35,12.070`;
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span>Pesticides</span>
+                        <span>Pesticide Residues</span>
                         {family === 'Pesticides' && <CheckCircle2 className="h-4 w-4" />}
                       </div>                    </button>
 
                     <button
-                      disabled
-                      className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-gray-50 text-gray-400 cursor-not-allowed"
+                      onClick={() => setFamily('Environmental')}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition ${
+                        family === 'Environmental'
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                      }`}
                     >
-                      <span>Environmental</span>
+                      <div className="flex items-center justify-between">
+                        <span>Environmental Contaminants</span>
+                        {family === 'Environmental' && <CheckCircle2 className="h-4 w-4" />}
+                      </div>
                     </button>
                      <button
                       disabled
-                      className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-gray-50 text-gray-400 cursor-not-allowed"
+                      className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-gray-50 text-gray-400 cursor-not-allowed flex items-center justify-between"
                     >
-                      <span>Veterinary</span>
+                      <span>Veterinary Drug Residues</span>
+                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                        Updating
+                      </span>
                     </button>
                   </nav>
                 </CardContent>
@@ -449,7 +459,7 @@ C35,12.070`;
                   </div>
                   <div>
                     <div className={`text-base font-semibold ${step === 'path' ? 'text-primary' : 'text-gray-700'}`}>
-                      Select Generation Path
+                      Select Transition Generation Path
                     </div>
                     {completedSteps.includes('path') && step !== 'path' && (
                       <div className="text-xs text-gray-500">Click to Return</div>
@@ -471,7 +481,7 @@ C35,12.070`;
                   </div>
                   <div className="text-left">
                     <div className={`text-base font-semibold ${step === 'configure' ? 'text-primary' : 'text-gray-700'}`}>
-Configure and Export
+Configure Method and Export
                     </div>
                   </div>
                 </div>
@@ -488,7 +498,7 @@ Configure and Export
                       <div className="space-y-4">
                         <div>
                           <label className="text-lg font-medium mb-3 block">
-                            Paste/Input (CAS or Compound Names; one per line)
+                            Paste or type CAS numbers or compound names (one per line)
                           </label>
                           <Textarea
                             placeholder={"1912-24-9\nChlorphyrifos\nMalathion\nFenitrothion\nParathion\n56-38-2"}
@@ -499,7 +509,7 @@ Configure and Export
                         </div>
 
                         <div className="flex items-center gap-3 flex-wrap">
-                          <span className="text-lg text-gray-600">Or Upload CSV</span>
+                          <span className="text-lg text-gray-600">Or upload CSV file</span>
                           <Button variant="outline" size="default" asChild disabled={loading}>
                             <label className="cursor-pointer">
                               Select File
@@ -521,14 +531,17 @@ Configure and Export
                               />
                             </label>
                           </Button>
-                          <Button 
-                            variant="link" 
-                            size="sm" 
+                          <Button
+                            variant="link"
+                            size="sm"
                             className="text-base h-auto p-0"
                             onClick={handleDownloadTemplate}
                           >
-                            (Template Download)
+                            Download CSV template
                           </Button>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          CSV must contain a single column with CAS numbers or compound names.
                         </div>
 
                         {normalized.length > 0 && (
@@ -582,7 +595,7 @@ Configure and Export
                       }}
                       disabled={loading || !inputText.trim()}
                     >
-                      {loading ? 'Processing...' : normalized.length > 0 ? 'Next' : 'Process Input and Next'}
+                      {loading ? 'Processing...' : normalized.length > 0 ? 'Next: Select Generation Path' : 'Next: Select Generation Path'}
                     </Button>
                   </div>
                 </div>
@@ -649,31 +662,31 @@ Configure and Export
                               <div className="text-sm text-gray-500 mb-3 italic">CF-40 Equivalent (~40.5 min), Series 2×15 m, Backflush-capable</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (Series)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (柱1) + 1.2 mL/min (柱2)
+                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Col1) + 1.2 mL/min (Col2)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (Hot 280°C)
+                                  <span className="font-semibold">Inlet:</span> Splitless (Hot 280°C)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ Post-run</span> (5 min @ 310°C)
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Post-run</span> (5 min @ 310°C)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">温度程序:</span>
+                                  <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
                                     60°C(1)→40°C/min→120; 5°C/min→310
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~40.5 min
+                                  Run time: ~40.5 min
                                 </div>
                                 <div className="text-sm text-gray-500 pt-2 border-t mt-2">
-                                  <span className="font-semibold">建议RTL:</span> Chlorpyrifos-methyl（CAS：5598-13-0）：18.111 min
+                                  <span className="font-semibold">Suggested RTL:</span> Chlorpyrifos-methyl (CAS: 5598-13-0): 18.111 min
                                 </div>
                               </div>
                             </div>
@@ -691,25 +704,25 @@ Configure and Export
                               <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Flow</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 30 m × 0.25 mm × 0.25 μm
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
+                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Constant Flow)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 1.0 min)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">温度程序:</span>
+                                  <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
                                     70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~40 min | RI 支持: C8–C35
+                                  Run time: ~40 min | RI range: C8–C35
                                 </div>
                               </div>
                             </div>
@@ -727,25 +740,25 @@ Configure and Export
                               <div className="text-sm text-gray-500 mb-3 italic">Fast Screening — Constant Flow</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">色谱柱:</span> 15 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 15 m × 0.25 mm × 0.25 μm
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">载气:</span> He, 1.2 mL/min (恒流)
+                                  <span className="font-semibold">Carrier:</span> He, 1.2 mL/min (Constant Flow)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (260°C, 0.75 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 0.75 min)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">温度程序:</span>
+                                  <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
                                     70°C(0.5)→40°C/min→180; 10°C/min→300(2.5)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~20 min | RI 支持: C8–C35
+                                  Run time: ~20 min | RI range: C8–C35
                                 </div>
                               </div>
                             </div>
@@ -763,25 +776,25 @@ Configure and Export
                               <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Pressure</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">色谱柱:</span> 30 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 30 m × 0.25 mm × 0.25 μm
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">载气:</span> He, 10.0 psi (恒压)
+                                  <span className="font-semibold">Carrier:</span> He, 10.0 psi (Constant Pressure)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (260°C, 1.0 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 1.0 min)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">温度程序:</span>
+                                  <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
                                     70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  运行时间: ~40 min | RI 支持: C8–C35
+                                  Run time: ~40 min | RI range: C8–C35
                                 </div>
                               </div>
                             </div>
@@ -799,28 +812,28 @@ Configure and Export
                               <div className="text-sm text-gray-500 mb-3 italic">Constant Flow with Backflush (series 2×15 m)</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">色谱柱:</span> 2×15 m × 0.25 mm × 0.25 μm (串联)
+                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (Series)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">固定相:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">载气:</span> He, 1.0 mL/min (恒流)
+                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Constant Flow)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">进样:</span> Splitless (280°C, 0.75 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (280°C, 0.75 min)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">反吹:</span> <span className="text-green-600">✓ 开启</span> (5 min @ 310°C)
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Enabled</span> (5 min @ 310°C)
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">温度程序:</span>
+                                  <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
                                     60°C(1)→40°C/min→120; 5°C/min→310
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  适用于复杂基质 | RI 支持: C8–C35
+Suitable for complex matrices | RI range: C8–C35
                                 </div>
                               </div>
                             </div>
@@ -859,8 +872,8 @@ Configure and Export
                     <Alert className="border-orange-200 bg-orange-50/50 rounded-2xl">
                       <AlertCircle className="h-6 w-6 text-orange-600" />
                       <AlertDescription className="text-lg">
-                        <strong>[含 GC 状态条]</strong> 未标定 | 上传 C7–C30 可获得 RT_pred<br/>
-                        <span className="text-base text-gray-600">覆盖范围: –</span>
+                        <strong>[Contains GC Status Bar]</strong> Uncalibrated | Upload C7–C30 to get RT_pred<br/>
+                        <span className="text-base text-gray-600">Coverage Range: –</span>
                       </AlertDescription>
                     </Alert>
                   )}
@@ -869,11 +882,11 @@ Configure and Export
                     <div className="lg:col-span-3 md:col-span-12 space-y-4">
                       <Card className="shadow-sm">
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-lg">控制面板</CardTitle>
+                          <CardTitle className="text-lg">Control Panel</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3 text-base">
                           <div className="flex items-center justify-between">
-                            <label className="font-medium">三点 CE 展开</label>
+                            <label className="font-medium">CE Expansion</label>
                             <Switch checked={expandCE} onCheckedChange={setExpandCE} />
                           </div>
                           <div className="space-y-2">
@@ -889,7 +902,7 @@ Configure and Export
                           </div>
                           <Separator />
                           <div className="text-sm text-gray-600">
-                            方法：{methodId || 'MSD Only'}
+                            Method: {methodId || 'MSD Only'}
                           </div>
                         </CardContent>
                       </Card>
@@ -897,19 +910,19 @@ Configure and Export
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">RI 标定（正构烷烃 C8–C35）</CardTitle>
+                            <CardTitle className="text-lg">RI Calibration (n-Alkanes C8–C35)</CardTitle>
                             <CardDescription className="text-sm">
-                              在当前 GC 方法下输入正构烷烃（C8–C35）的保留时间（RT）。系统将基于数据库提供的 RI（保留指数）完成 RI→RT 映射标定，并计算目标化合物的 预测保留时间 RT_pred 与建议时间窗。
+                              Enter retention times (RT) for n-alkanes (C8–C35) under the current GC method. The system will complete RI→RT mapping calibration based on RI (retention index) from the database, and calculate predicted retention time RT_pred and suggested time windows for target compounds.
                             </CardDescription>
                           </CardHeader>
                           <CardContent className="space-y-3">
                             {!calibrated ? (
                               <>
                                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                                  <div className="text-xs text-blue-800 mb-1 font-semibold">格式说明：</div>
+                                  <div className="text-xs text-blue-800 mb-1 font-semibold">Format:</div>
                                   <div className="text-xs text-blue-700 space-y-0.5 font-mono">
-                                    <div>• 每行: 碳数, RT (如 C7, 0.85)</div>
-                                    <div>• 建议至少 5 个烷烃</div>
+                                    <div>• Per line: carbon number, RT (e.g. C7, 0.85)</div>
+                                    <div>• At least 5 alkanes recommended</div>
                                   </div>
                                 </div>
 
@@ -981,7 +994,7 @@ Apply Calibration
                                     onClick={() => setAlkaneText('')}
                                     size="sm"
                                   >
-                                    清除
+Clear
                                   </Button>
                                 </div>
                               </>
@@ -1002,7 +1015,7 @@ Apply Calibration
                           <div className="flex items-center justify-between">
                             <CardTitle className="text-xl">Generated Method Transitions</CardTitle>
                             <div className="text-base text-gray-600">
-                              搜索/筛选/列显隐
+                              Search/Filter/Column Show
                             </div>
                           </div>
                         </CardHeader>
@@ -1013,14 +1026,14 @@ Apply Calibration
                                 <ResultsTable rows={rows} />
                               </div>
                               <div className="mt-4 text-lg text-gray-600 font-medium">
-                                合计: {rows.length} 行
+                                Total: {rows.length} rows
                               </div>
                             </>
                           ) : (
                             <div className="text-center py-12 text-gray-500">
                               <Info className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                              <p className="text-lg">暂无数据</p>
-                              <p className="text-base mt-2">请先完成前两步操作</p>
+                              <p className="text-lg">No data</p>
+                              <p className="text-base mt-2">Complete steps 1 and 2 first</p>
                             </div>
                           )}
                         </CardContent>
@@ -1042,7 +1055,7 @@ Apply Calibration
                       Previous
                     </Button>
                     </Button>
-                    <span className="text-sm text-gray-500">重新选择方法或参数</span>
+                    <span className="text-sm text-gray-500">Reselect method or parameters</span>
                   </div>
                 </div>
               )}
@@ -1090,11 +1103,11 @@ Apply Calibration
                           className="px-4 py-2 border border-gray-300 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value="">-- Select Method --</option>
-                          <option value="CF40-LOCKABLE">CF40-LOCKABLE (恒流模式约40min)</option>
-                          <option value="STD-CF-40">STD-CF-40 (标准分离~40min)</option>
-                          <option value="FAST-CF-20">FAST-CF-20 (快速筛查~20min)</option>
-                          <option value="CP-40">CP-40 (恒压模式~40min)</option>
-                          <option value="CF-5x15">CF-5x15 (快速5层~15min)</option>
+                          <option value="CF40-LOCKABLE">CF40-LOCKABLE</option>
+                          <option value="STD-CF-40">STD-CF-40</option>
+                          <option value="FAST-CF-20">FAST-CF-20</option>
+                          <option value="CP-40">CP-40</option>
+                          <option value="CF-5x15">CF-5x15</option>
                         </select>
                         <Button 
                           onClick={handleExportMethod} 
@@ -1136,7 +1149,7 @@ Apply Calibration
                         <div className="flex-1">
                           <div className="font-medium break-all">{item}</div>
                           <div className="text-xs text-gray-600 mt-1">
-                            未匹配到数据库记录
+                            No match found in database
                           </div>
                         </div>
                       </div>
