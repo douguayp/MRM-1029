@@ -94,7 +94,7 @@ export default function Generator() {
     }
   };
 
-  // New validation handler for Step 1
+  // New validation handler for Step 1 - only validates, never progresses
   const handleValidate = async () => {
     setLoading(true);
     const queries = inputText.split('\n').filter(q => q.trim().length > 0);
@@ -127,14 +127,8 @@ export default function Generator() {
       // Update the main normalized state for use in step 2
       setNormalized(results);
 
-      // If all compounds matched, proceed directly to step 2
-      if (unmatched.length === 0) {
-        markStepCompleted('input');
-        goToStep('path');
-      } else {
-        // Otherwise show validation results panel
-        setShowValidationResults(true);
-      }
+      // Show validation results panel regardless of outcome
+      setShowValidationResults(true);
 
     } catch (error) {
       console.error('Validation error:', error);
@@ -416,6 +410,9 @@ C35,12.070`;
     downloadCSV(alkaneTemplateContent, 'alkane_calibration_template.csv');
   };
 
+  // Determine if we have validation results (either matched or unmatched compounds)
+  const hasValidationResult = showValidationResults || matchedCompounds.length > 0 || unmatchedCompounds.length > 0;
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
 
@@ -598,36 +595,49 @@ Configure Method and Export
                           />
                         </div>
 
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <span className="app-muted-text">Or upload CSV file</span>
-                          <Button variant="outline" size="default" asChild disabled={loading} title="CSV must contain a single column with CAS numbers or compound names.">
-                            <label className="cursor-pointer">
-                              Select File
-                              <input
-                                type="file"
-                                accept=".csv,.txt"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      const text = event.target?.result as string;
-                                      setInputText(text);
-                                    };
-                                    reader.readAsText(file);
-                                  }
-                                }}
-                                className="hidden"
-                              />
-                            </label>
-                          </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <span className="app-muted-text">Or upload CSV file</span>
+                            <Button variant="outline" size="default" asChild disabled={loading} title="CSV must contain a single column with CAS numbers or compound names.">
+                              <label className="cursor-pointer">
+                                Select File
+                                <input
+                                  type="file"
+                                  accept=".csv,.txt"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onload = (event) => {
+                                        const text = event.target?.result as string;
+                                        setInputText(text);
+                                      };
+                                      reader.readAsText(file);
+                                    }
+                                  }}
+                                  className="hidden"
+                                />
+                              </label>
+                            </Button>
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="text-base h-auto p-0"
+                              onClick={handleDownloadTemplate}
+                            >
+                              Download CSV template
+                            </Button>
+                          </div>
                           <Button
-                            variant="link"
-                            size="sm"
-                            className="text-base h-auto p-0"
-                            onClick={handleDownloadTemplate}
+                            variant="default"
+                            size="default"
+                            onClick={() => {
+                              handleValidate();
+                            }}
+                            disabled={loading}
+                            className="ml-auto"
                           >
-                            Download CSV template
+                            Validate
                           </Button>
                         </div>
 
@@ -687,24 +697,6 @@ Configure Method and Export
                                 </div>
                               ))}
                             </div>
-
-                            <div className="flex gap-3 flex-wrap">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleEditInput}
-                                className="text-sm"
-                              >
-                                Edit input
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={handleContinueWithMatched}
-                                className="text-sm"
-                              >
-                                Continue with matched compounds only
-                              </Button>
-                            </div>
                           </div>
                         )}
                       </div>
@@ -719,15 +711,22 @@ Configure Method and Export
                     >
                       Clear
                     </Button>
-                    <Button
-                      size="lg"
-                      onClick={() => {
-                        handleValidate(); // Always validate on click
-                      }}
-                      disabled={loading || !inputText.trim()}
-                    >
-                      Validate
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={handleEditInput}
+                      >
+                        Edit input
+                      </Button>
+                      <Button
+                        size="lg"
+                        onClick={handleContinueWithMatched}
+                        disabled={loading || matchedCompounds.length === 0}
+                      >
+                        Continue with matched compounds only
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -788,24 +787,27 @@ Configure Method and Export
                               }`}
                             >
                               <div className="font-bold text-2xl mb-3 text-gray-800">
-                                Constant Flow Mode (~40min)
+                                Constant Flow (~40.5 min), 2×15 m, Backflush & RT-Locked
                               </div>
-                              <div className="text-sm text-gray-500 mb-3 italic">CF-40 Equivalent (~40.5 min), Series 2×15 m, Backflush-capable</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Premium screening method with retention time locking and backflush capability</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (Series)
+                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (series via purged low-dead-volume union)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane (DB-5/MS type)
                                 </div>
                                 <div className="text-base">
                                   <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Col1) + 1.2 mL/min (Col2)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Inlet:</span> Splitless (Hot 280°C)
+                                  <span className="font-semibold">Inlet:</span> Splitless (hot/cold)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Post-run</span> (5 min @ 310°C)
+                                  <span className="font-semibold">Liner:</span> 4 mm deactivated splitless liner with wool
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Available</span>
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">Oven Program:</span>
@@ -816,158 +818,163 @@ Configure Method and Export
                                 <div className="text-base font-medium text-blue-600 pt-2">
                                   Run time: ~40.5 min
                                 </div>
-                                <div className="text-sm text-gray-500 pt-2 border-t mt-2">
-                                  <span className="font-semibold">Suggested RTL:</span> Chlorpyrifos-methyl (CAS: 5598-13-0): 18.111 min
+                                <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                                  <div className="font-semibold text-green-800">RETENTION TIME LOCKING (RTL):</div>
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (CAS 5598-13-0)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Target RT:</span> 18.111 min (±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Constant Flow (CF) - Full RTL support</div>
+                                  <div className="text-xs text-green-600 mt-1">Note: Reference RT ≈ 18.11 min under standard conditions; actual application requires lab-specific locking.</div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Method 2: STD-CF-40 */}
+                            {/* Method 2: CF21-FAST-2x15 */}
                             <div
-                              onClick={() => setMethodId('STD-CF-40')}
+                              onClick={() => setMethodId('CF21-FAST-2x15')}
                               className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'STD-CF-40'
+                                methodId === 'CF21-FAST-2x15'
                                   ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
                                   : 'border-border hover:shadow'
                               }`}
                             >
-                              <div className="font-bold text-2xl mb-3 text-gray-800">STD-CF-40</div>
-                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Flow</div>
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CF21-FAST-2x15</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Fast Constant Flow (~20.8 min), 2×15 m, Backflush</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">Column:</span> 30 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (series via purged low-dead-volume union)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane (DB-5/MS type)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Constant Flow)
+                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Col1) + 1.2 mL/min (Col2)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 1.0 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (hot/cold)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Liner:</span> 4 mm deactivated splitless liner with wool
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Available</span>
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
-                                    70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
+                                    60°C(1)→40°C/min→170; 10°C/min→310(3)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  Run time: ~40 min | RI range: C8–C35
+                                  Run time: ~20.8 min
+                                </div>
+                                <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                                  <div className="font-semibold text-green-800">RETENTION TIME LOCKING (RTL):</div>
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (CAS 5598-13-0)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Target RT:</span> 9.143 min (±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Constant Flow (CF) - Fast program RTL support</div>
+                                  <div className="text-xs text-green-600 mt-1">Note: Fast program reference RT ≈ 9.14 min; lab-specific locking required.</div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Method 3: FAST-CF-20 */}
+                            {/* Method 3: CF20-SV-5x15 */}
                             <div
-                              onClick={() => setMethodId('FAST-CF-20')}
+                              onClick={() => setMethodId('CF20-SV-5x15')}
                               className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'FAST-CF-20'
+                                methodId === 'CF20-SV-5x15'
                                   ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
                                   : 'border-border hover:shadow'
                               }`}
                             >
-                              <div className="font-bold text-2xl mb-3 text-gray-800">FAST-CF-20</div>
-                              <div className="text-sm text-gray-500 mb-3 italic">Fast Screening — Constant Flow</div>
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CF20-SV-5x15</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Fast Constant Flow (~20 min), 5+15 m, Solvent-Vent, Backflush</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">Column:</span> 15 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 5 m + 15 m × 0.25 mm × 0.25 μm (series via purged union)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane (DB-5/MS type)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Carrier:</span> He, 1.2 mL/min (Constant Flow)
+                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Col1) + 1.2 mL/min (Col2)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 0.75 min)
+                                  <span className="font-semibold">Inlet:</span> Solvent Vent (recommended); Hot Splitless as alternative
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Liner:</span> 4 mm splitless liner with wool / 2 mm dimpled liner
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Available</span>
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
-                                    70°C(0.5)→40°C/min→180; 10°C/min→300(2.5)
+                                    60°C(1.5)→50°C/min→160; 8°C/min→240; 50°C/min→280(2.5); 100°C/min→290(3.1)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  Run time: ~20 min | RI range: C8–C35
+                                  Run time: ~20.0 min
+                                </div>
+                                <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                                  <div className="font-semibold text-green-800">RETENTION TIME LOCKING (RTL):</div>
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (CAS 5598-13-0)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Target RT:</span> 8.524 min (±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Constant Flow (CF) - Solvent-Vent fast program RTL support</div>
+                                  <div className="text-xs text-green-600 mt-1">Note: Solvent-Vent fast program reference RT ≈ 8.52 min.</div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Method 4: CP-40 */}
+                            {/* Method 4: CP42-30m-BF */}
                             <div
-                              onClick={() => setMethodId('CP-40')}
+                              onClick={() => setMethodId('CP42-30m-BF')}
                               className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'CP-40'
+                                methodId === 'CP42-30m-BF'
                                   ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
                                   : 'border-border hover:shadow'
                               }`}
                             >
-                              <div className="font-bold text-2xl mb-3 text-gray-800">CP-40</div>
-                              <div className="text-sm text-gray-500 mb-3 italic">Standard Separation — Constant Pressure</div>
+                              <div className="font-bold text-2xl mb-3 text-gray-800">CP42-30m-BF</div>
+                              <div className="text-sm text-gray-500 mb-3 italic">Constant Pressure (~41.9 min), 30 m, Backflush</div>
                               <div className="space-y-2 text-gray-600">
                                 <div className="text-base">
-                                  <span className="font-semibold">Column:</span> 30 m × 0.25 mm × 0.25 μm
+                                  <span className="font-semibold">Column:</span> 30 m × 0.25 mm × 0.25 μm (with post-column restrictor and backflush union)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
+                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane (DB-5/MS type)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Carrier:</span> He, 10.0 psi (Constant Pressure)
+                                  <span className="font-semibold">Carrier:</span> He, 30.0 psi (Constant Pressure)
                                 </div>
                                 <div className="text-base">
-                                  <span className="font-semibold">Inlet:</span> Splitless (260°C, 1.0 min)
+                                  <span className="font-semibold">Inlet:</span> Splitless (hot/cold)
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Liner:</span> 4 mm deactivated splitless liner with wool
+                                </div>
+                                <div className="text-base">
+                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Available</span>
                                 </div>
                                 <div className="text-base border-t pt-2 mt-2">
                                   <span className="font-semibold">Oven Program:</span>
                                   <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
-                                    70°C(1)→25°C/min→150; 3°C/min→200; 8°C/min→300(5)
+                                    70°C(2)→25°C/min→150; 3°C/min→200; 8°C/min→280(10)
                                   </div>
                                 </div>
                                 <div className="text-base font-medium text-blue-600 pt-2">
-                                  Run time: ~40 min | RI range: C8–C35
+                                  Run time: ~41.9 min
+                                </div>
+                                <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
+                                  <div className="font-semibold text-green-800">RETENTION TIME LOCKING (RTL):</div>
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (CAS 5598-13-0)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Target RT:</span> 16.593 min (±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Constant Pressure (CP) - Full RTL support</div>
+                                  <div className="text-xs text-green-600 mt-1">Note: Constant pressure mode reference RT ≈ 16.59 min.</div>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Method 5: CF-5x15 */}
-                            <div
-                              onClick={() => setMethodId('CF-5x15')}
-                              className={`rounded-2xl border p-5 cursor-pointer transition ${
-                                methodId === 'CF-5x15'
-                                  ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
-                                  : 'border-border hover:shadow'
-                              }`}
-                            >
-                              <div className="font-bold text-2xl mb-3 text-gray-800">CF-5x15</div>
-                              <div className="text-sm text-gray-500 mb-3 italic">Constant Flow with Backflush (series 2×15 m)</div>
-                              <div className="space-y-2 text-gray-600">
-                                <div className="text-base">
-                                  <span className="font-semibold">Column:</span> 2×15 m × 0.25 mm × 0.25 μm (Series)
-                                </div>
-                                <div className="text-base">
-                                  <span className="font-semibold">Phase:</span> 5% phenyl-methylpolysiloxane
-                                </div>
-                                <div className="text-base">
-                                  <span className="font-semibold">Carrier:</span> He, 1.0 mL/min (Constant Flow)
-                                </div>
-                                <div className="text-base">
-                                  <span className="font-semibold">Inlet:</span> Splitless (280°C, 0.75 min)
-                                </div>
-                                <div className="text-base">
-                                  <span className="font-semibold">Backflush:</span> <span className="text-green-600">✓ Enabled</span> (5 min @ 310°C)
-                                </div>
-                                <div className="text-base border-t pt-2 mt-2">
-                                  <span className="font-semibold">Oven Program:</span>
-                                  <div className="text-sm mt-1 font-mono bg-gray-50 p-2 rounded">
-                                    60°C(1)→40°C/min→120; 5°C/min→310
-                                  </div>
-                                </div>
-                                <div className="text-base font-medium text-blue-600 pt-2">
-Suitable for complex matrices | RI range: C8–C35
-                                </div>
-                              </div>
-                            </div>
 
                           </div>
                         </div>
