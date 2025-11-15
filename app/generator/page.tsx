@@ -51,7 +51,7 @@ export default function Generator() {
       const filtered = queries.filter(q => q.trim().length > 0);
 
       if (filtered.length === 0) {
-        alert('请输入至少一个化合物名称或CAS号');
+        alert('Please enter at least one compound name or CAS number');
         setLoading(false);
         return;
       }
@@ -71,14 +71,14 @@ export default function Generator() {
       setUnmatched(data.unmatched || []);
 
       if ((data.results || []).length === 0 && (data.unmatched || []).length === 0) {
-        alert('未找到任何匹配的化合物，请检查输入');
+        alert('No matching compounds found, please check your input');
       } else {
         markStepCompleted('input');
         goToStep('path');
       }
     } catch (error) {
       console.error('Normalization error:', error);
-      alert('处理输入时出错，请重试');
+      alert('Error processing input, please try again');
     } finally {
       setLoading(false);
     }
@@ -144,15 +144,15 @@ export default function Generator() {
           if (!isNaN(rt) && rt > 0) {
             alkanes.push({ name, rt });
           } else {
-            parseErrors.push(`第 ${i + 1} 行: RT 值无效 "${parts[1]}"`);
+            parseErrors.push(`Line ${i + 1}: Invalid RT value "${parts[1]}"`);
           }
         } else {
-          parseErrors.push(`第 ${i + 1} 行: 格式错误 "${line}"`);
+          parseErrors.push(`Line ${i + 1}: Invalid format "${line}"`);
         }
       }
 
       if (alkanes.length < 5) {
-        const errorMsg = `只成功解析了 ${alkanes.length} 个烷烃，至少需要 5 个。\n\n解析错误：\n${parseErrors.slice(0, 5).join('\n')}${parseErrors.length > 5 ? '\n...' : ''}`;
+        const errorMsg = `Successfully parsed only ${alkanes.length} alkanes, need at least 5.\n\nParse errors:\n${parseErrors.slice(0, 5).join('\n')}${parseErrors.length > 5 ? '\n...' : ''}`;
         alert(errorMsg);
         setLoading(false);
         return;
@@ -180,7 +180,7 @@ export default function Generator() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        alert(`标定失败: ${errorData.error || '未知错误'}`);
+        alert(`Calibration failed: ${errorData.error || 'Unknown error'}`);
         setLoading(false);
         return;
       }
@@ -188,7 +188,7 @@ export default function Generator() {
       const data = await res.json();
 
       if (!data.mapped || !Array.isArray(data.mapped)) {
-        alert('标定失败: 服务器返回数据格式错误');
+        alert('Calibration failed: Server returned invalid data format');
         setLoading(false);
         return;
       }
@@ -210,10 +210,10 @@ export default function Generator() {
 
       setRows(updated);
       setCalibrated(true);
-      alert(`RI 标定成功！已更新 ${data.mapped.length} 个化合物的 RT 预测值。`);
+      alert(`RI calibration successful! Updated RT prediction values for ${data.mapped.length} compounds.`);
     } catch (error) {
       console.error('Calibration error:', error);
-      alert(`标定过程出错: ${error instanceof Error ? error.message : '未知错误'}`);
+      alert(`Calibration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -264,7 +264,7 @@ export default function Generator() {
 
   const handleExportMethod = async () => {
     if (!selectedMethodForExport) {
-      alert('请先选择要导出的 GC 方法');
+      alert('Please select a GC method to export');
       return;
     }
 
@@ -285,7 +285,7 @@ export default function Generator() {
       }
     } catch (error) {
       console.error('Export method error:', error);
-      alert('导出 GC 方法失败');
+      alert('GC method export failed');
     }
   };
 
@@ -340,17 +340,7 @@ C35,12.070`;
       {/* Simple Header */}
       <header className="bg-white border-b border-gray-200 py-3 px-6">
         <div className="container mx-auto max-w-7xl flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">M</span>
-            </div>
-            <h1 className="text-lg font-semibold text-gray-900">
-              MRM Method Builder
-            </h1>
-          </a>
-          <Button variant="outline" onClick={() => window.location.href = '/'}>
-            返回首页
-          </Button>
+         
         </div>
       </header>
 
@@ -378,24 +368,19 @@ C35,12.070`;
                       <div className="flex items-center justify-between">
                         <span>Pesticides</span>
                         {family === 'Pesticides' && <CheckCircle2 className="h-4 w-4" />}
-                      </div>
-                      <p className="text-xs mt-0.5 opacity-90">农药化合物</p>
-                    </button>
-                    
+                      </div>                    </button>
+
                     <button
                       disabled
                       className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-gray-50 text-gray-400 cursor-not-allowed"
                     >
                       <span>Environmental</span>
-                      <p className="text-xs mt-0.5">环境污染物 (Soon)</p>
                     </button>
-                    
-                    <button
+                     <button
                       disabled
                       className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium bg-gray-50 text-gray-400 cursor-not-allowed"
                     >
                       <span>Veterinary</span>
-                      <p className="text-xs mt-0.5">兽药残留 (Soon)</p>
                     </button>
                   </nav>
                 </CardContent>
@@ -436,10 +421,10 @@ C35,12.070`;
                   </div>
                   <div>
                     <div className={`text-base font-semibold ${step === 'input' ? 'text-primary' : 'text-gray-700'}`}>
-                      输入目标化合物
+                      Enter Target Compounds
                     </div>
                     {completedSteps.includes('input') && step !== 'input' && (
-                      <div className="text-xs text-gray-500">点击返回</div>
+                      <div className="text-xs text-gray-500">Click to Return</div>
                     )}
                   </div>
                 </button>
@@ -464,10 +449,10 @@ C35,12.070`;
                   </div>
                   <div>
                     <div className={`text-base font-semibold ${step === 'path' ? 'text-primary' : 'text-gray-700'}`}>
-                      选择生成路径
+                      Select Generation Path
                     </div>
                     {completedSteps.includes('path') && step !== 'path' && (
-                      <div className="text-xs text-gray-500">点击返回</div>
+                      <div className="text-xs text-gray-500">Click to Return</div>
                     )}
                   </div>
                 </button>
@@ -486,7 +471,7 @@ C35,12.070`;
                   </div>
                   <div className="text-left">
                     <div className={`text-base font-semibold ${step === 'configure' ? 'text-primary' : 'text-gray-700'}`}>
-                      配置并导出
+Configure and Export
                     </div>
                   </div>
                 </div>
@@ -503,7 +488,7 @@ C35,12.070`;
                       <div className="space-y-4">
                         <div>
                           <label className="text-lg font-medium mb-3 block">
-                            粘贴/输入（CAS 或英文名；一行一个）
+                            Paste/Input (CAS or Name; one per line)
                           </label>
                           <Textarea
                             placeholder={"1912-24-9\nChlorphyrifos\nMalathion\nFenitrothion\nParathion\n56-38-2"}
@@ -514,10 +499,10 @@ C35,12.070`;
                         </div>
 
                         <div className="flex items-center gap-3 flex-wrap">
-                          <span className="text-lg text-gray-600">或 上传 CSV</span>
+                          <span className="text-lg text-gray-600">Or Upload CSV</span>
                           <Button variant="outline" size="default" asChild disabled={loading}>
                             <label className="cursor-pointer">
-                              选择文件
+                              Select File
                               <input
                                 type="file"
                                 accept=".csv,.txt"
@@ -542,23 +527,23 @@ C35,12.070`;
                             className="text-base h-auto p-0"
                             onClick={handleDownloadTemplate}
                           >
-                            (模板下载)
+                            (Template Download)
                           </Button>
                         </div>
 
                         {normalized.length > 0 && (
                           <div className="p-4 bg-muted/50 rounded-lg border">
                             <div className="flex gap-4 text-lg text-gray-600 items-center flex-wrap">
-                              <span className="font-medium">校验结果：</span>
+                              <span className="font-medium">Validation Results:</span>
                               <div className="flex items-center gap-1.5">
                                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                <span>命中 {normalized.length}</span>
+                                <span>Matched {normalized.length}</span>
                               </div>
                               {unmatched.length > 0 && (
                                 <>
                                   <div className="flex items-center gap-1.5">
                                     <AlertCircle className="h-4 w-4 text-orange-600" />
-                                    <span>未匹配 {unmatched.length}</span>
+                                    <span>Unmatched {unmatched.length}</span>
                                   </div>
                                   <Button
                                     variant="link"
@@ -566,7 +551,7 @@ C35,12.070`;
                                     className="h-auto p-0 text-primary text-lg font-medium"
                                     onClick={() => setShowGapReport(true)}
                                   >
-                                    查看缺口报告
+                                    View Gap Report
                                   </Button>
                                 </>
                               )}
@@ -583,7 +568,7 @@ C35,12.070`;
                       size="lg"
                       onClick={() => setInputText('')}
                     >
-                      清空
+                      Clear
                     </Button>
                     <Button
                       size="lg"
@@ -597,7 +582,7 @@ C35,12.070`;
                       }}
                       disabled={loading || !inputText.trim()}
                     >
-                      {loading ? '处理中...' : normalized.length > 0 ? '下一步' : '处理输入并下一步'}
+                      {loading ? 'Processing...' : normalized.length > 0 ? 'Next' : 'Process Input and Next'}
                     </Button>
                   </div>
                 </div>
@@ -617,11 +602,11 @@ C35,12.070`;
                         >
                           <RadioGroupItem value="msdOnly" id="msdOnly" className="mt-1" />
                           <div className="flex-1">
-                            <Label htmlFor="msdOnly" className="text-xl font-semibold cursor-pointer">
-                              仅 MSD 方法（跳过 GC）
-                            </Label>
+                          <Label htmlFor="msdOnly" className="text-xl font-semibold cursor-pointer">
+                             MSD Only Method (Skip GC)
+                           </Label>
                             <p className="text-lg text-gray-600 mt-2">
-                              先生成 Q1/Q3/CE，RT 可稍后补
+                              Generate Q1/Q3/CE first, RT can be added later
                             </p>
                           </div>
                         </div>
@@ -635,10 +620,10 @@ C35,12.070`;
                           <RadioGroupItem value="withGC" id="withGC" className="mt-1" />
                           <div className="flex-1">
                             <Label htmlFor="withGC" className="text-xl font-semibold cursor-pointer">
-                              含 GC 方法（推荐）
+                              With GC Method (Recommended)
                             </Label>
                             <p className="text-lg text-gray-600 mt-2">
-                              选择 GC 方法 + 上传烷烃获取 RT
+                              Select GC Method + Upload Alkanes for RT
                             </p>
                           </div>
                         </div>
@@ -646,7 +631,7 @@ C35,12.070`;
 
                       {mode === 'withGC' && (
                         <div className="pt-4 border-t">
-                          <h3 className="text-xl font-semibold mb-4">选择 GC 方法（含 GC 时可见）</h3>
+                          <h3 className="text-xl font-semibold mb-4">Select GC Method (Visible when with GC)</h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             
                             {/* Method 1: CF40-LOCKABLE */}
@@ -659,7 +644,7 @@ C35,12.070`;
                               }`}
                             >
                               <div className="font-bold text-2xl mb-3 text-gray-800">
-                                恒流模式（约40min）
+                                Constant Flow Mode (~40min)
                               </div>
                               <div className="text-sm text-gray-500 mb-3 italic">CF-40 Equivalent (~40.5 min), Series 2×15 m, Backflush-capable</div>
                               <div className="space-y-2 text-gray-600">
@@ -848,7 +833,9 @@ C35,12.070`;
 
                   <div className="flex justify-between">
                     <Button variant="outline" size="lg" onClick={() => goToStep('input')}>
-                      上一步
+                    <Button variant="outline" size="lg" onClick={() => goToStep('input')}>
+                      Previous
+                    </Button>
                     </Button>
                     <Button
                       size="lg"
@@ -859,7 +846,7 @@ C35,12.070`;
                       }}
                       disabled={loading}
                     >
-                      {loading ? '构建中...' : '下一步'}
+                      {loading ? 'Building...' : 'Next'}
                     </Button>
                   </div>
                 </div>
@@ -928,7 +915,7 @@ C35,12.070`;
 
                                 <div>
                                   <label className="text-sm text-gray-700 font-medium block mb-1.5">
-                                    手动输入 RI 标定数据
+                                    Manual RI Calibration Data Input
                                   </label>
                                   <Textarea
                                     placeholder={"C8,  2.466\nC9,  3.014\nC10, 3.513\nC11, 3.970"}
@@ -938,10 +925,10 @@ C35,12.070`;
                                   />
                                 </div>
                                 <div className="flex items-center gap-3 flex-wrap">
-                                  <span className="text-sm text-gray-600">或 上传 CSV</span>
+                                  <span className="text-sm text-gray-600">Or Upload CSV</span>
                                   <Button variant="outline" size="sm" asChild>
                                     <label className="cursor-pointer">
-                                      选择文件
+                                      Select File
                                       <input
                                         type="file"
                                         accept=".csv,.txt"
@@ -966,7 +953,7 @@ C35,12.070`;
                                     className="text-xs h-auto p-0"
                                     onClick={handleDownloadAlkaneTemplate}
                                   >
-                                    (模板下载)
+                                    (Template Download)
                                   </Button>
                                 </div>
                                 <div className="flex gap-2">
@@ -976,7 +963,18 @@ C35,12.070`;
                                     size="sm"
                                     className="flex-1"
                                   >
-                                    应用标定
+                                    Apply Calibration
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => setAlkaneText('')}
+                                    size="sm"
+                                  >
+                                    Clear
+                                    size="sm"
+                                    className="flex-1"
+                                  >
+Apply Calibration
                                   </Button>
                                   <Button
                                     variant="outline"
@@ -990,7 +988,7 @@ C35,12.070`;
                             ) : (
                               <Alert className="border-green-200 bg-green-50">
                                 <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                <AlertDescription className="text-xs">标定已应用</AlertDescription>
+                                <AlertDescription className="text-xs">Calibration Applied</AlertDescription>
                               </Alert>
                             )}
                           </CardContent>
@@ -1040,7 +1038,9 @@ C35,12.070`;
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
-                      上一步
+                    <Button variant="outline" size="lg" onClick={() => goToStep('input')}>
+                      Previous
+                    </Button>
                     </Button>
                     <span className="text-sm text-gray-500">重新选择方法或参数</span>
                   </div>
@@ -1053,10 +1053,10 @@ C35,12.070`;
                   <div className="container mx-auto max-w-6xl space-y-4">
                     <div className="flex items-center justify-between flex-wrap gap-4">
                       <div className="text-lg font-semibold text-gray-700">
-                        导出 Transitions
+                        Export Transitions
                       </div>
                       <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-lg text-gray-600 mr-2">选择格式：</span>
+                        <span className="text-lg text-gray-600 mr-2">Select Format:</span>
                         <Button onClick={() => handleExport('generic')} variant="outline" size="lg" className="font-medium">
                           Generic CSV
                         </Button>
@@ -1064,13 +1064,13 @@ C35,12.070`;
                           Vendor-A Compatible
                         </Button>
                         <Button onClick={() => handleExport('both')} size="lg" className="font-medium">
-                          导出全部
+                          Export All
                         </Button>
                         {unmatched.length > 0 && (
                           <>
                             <Separator orientation="vertical" className="h-6 mx-2" />
                             <Button variant="link" size="default" onClick={() => setShowGapReport(true)} className="text-primary hover:text-primary/80 text-lg">
-                              查看缺口报告 ({unmatched.length})
+                              View Gap Report ({unmatched.length})
                             </Button>
                           </>
                         )}
@@ -1080,16 +1080,16 @@ C35,12.070`;
                     <Separator />
                     <div className="flex items-center justify-between flex-wrap gap-4">
                       <div className="text-lg font-semibold text-gray-700">
-                        导出 GC 方法参数
+                        Export GC Method Parameters
                       </div>
                       <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-lg text-gray-600 mr-2">选择方法：</span>
+                        <span className="text-lg text-gray-600 mr-2">Select Method:</span>
                         <select
                           value={selectedMethodForExport}
                           onChange={(e) => setSelectedMethodForExport(e.target.value)}
                           className="px-4 py-2 border border-gray-300 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary"
                         >
-                          <option value="">-- 请选择 --</option>
+                            <option value="">-- Select Method --</option>
                           <option value="CF40-LOCKABLE">CF40-LOCKABLE (恒流模式约40min)</option>
                           <option value="STD-CF-40">STD-CF-40 (标准分离~40min)</option>
                           <option value="FAST-CF-20">FAST-CF-20 (快速筛查~20min)</option>
@@ -1104,7 +1104,7 @@ C35,12.070`;
                           disabled={!selectedMethodForExport}
                         >
                           <FileDown className="h-5 w-5 mr-2" />
-                          导出方法
+                          Export Method
                         </Button>
                       </div>
                     </div>
@@ -1120,9 +1120,9 @@ C35,12.070`;
       <Sheet open={showGapReport} onOpenChange={setShowGapReport}>
         <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>缺口报告</SheetTitle>
+            <SheetTitle>Gap Report</SheetTitle>
             <SheetDescription>
-              以下化合物未能在数据库中匹配
+              Compounds not found in the database
             </SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
@@ -1145,13 +1145,13 @@ C35,12.070`;
                 </div>
                 <Button className="w-full" variant="outline">
                   <Download className="mr-2 h-4 w-4" />
-                  下载完整缺口报告 CSV
+                  Download Complete Gap Report CSV
                 </Button>
               </>
             ) : (
               <div className="text-center py-8 text-gray-500">
                 <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-600" />
-                <p>所有化合物均已匹配</p>
+                <p>All compounds matched</p>
               </div>
             )}
           </div>
