@@ -156,15 +156,51 @@
 }
 
 /* EPA-style professional enhancements */
+/* 新的排版系统 - 统一字体大小和权重 */
+@layer base {
+  body {
+    @apply text-[15px] leading-relaxed text-slate-900;
+  }
+}
+
 @layer components {
+  .app-page-title {
+    @apply text-xl md:text-2xl font-semibold tracking-tight text-slate-900;
+  }
+
+  .app-section-title {
+    @apply text-sm font-semibold text-slate-900;
+  }
+
+  .app-label {
+    @apply text-xs font-medium uppercase tracking-wide text-slate-500;
+  }
+
+  .app-body-text {
+    @apply text-sm md:text-[15px] text-slate-800;
+  }
+
+  .app-muted-text {
+    @apply text-xs text-slate-500;
+  }
+
+  .app-nav-button {
+    @apply w-full text-left px-3 py-2 rounded-lg text-sm font-semibold transition text-slate-800;
+  }
+
+  .app-textarea {
+    @apply text-sm leading-6 font-mono;
+  }
+
+  /* EPA-style professional enhancements */
   .card-shadow {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
-  
+
   .card-shadow-hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   /* Professional focus states */
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
