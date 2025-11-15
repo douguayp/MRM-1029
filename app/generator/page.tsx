@@ -353,7 +353,7 @@ C35,12.070`;
               <Card className="shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Categories</CardTitle>
-                  <CardDescription className="text-sm">Select a family</CardDescription>
+                  {/*<CardDescription className="text-sm">Select a family</CardDescription>*/}
                 </CardHeader>
                 <CardContent>
                   <nav className="space-y-1.5">
@@ -488,7 +488,7 @@ Configure and Export
                       <div className="space-y-4">
                         <div>
                           <label className="text-lg font-medium mb-3 block">
-                            Paste/Input (CAS or Name; one per line)
+                            Paste/Input (CAS or Compound Names; one per line)
                           </label>
                           <Textarea
                             placeholder={"1912-24-9\nChlorphyrifos\nMalathion\nFenitrothion\nParathion\n56-38-2"}
