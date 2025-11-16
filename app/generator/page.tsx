@@ -115,7 +115,7 @@ export default function Generator() {
               <div className="font-medium text-green-800">RETENTION TIME LOCKING (RTL):</div>
               <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> {config.rt_lock.lock_compound} ({config.rt_lock.target_rt_min} min ±{config.rt_lock.tolerance_min} min)</div>
               <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> {config.rt_lock.mode_hint || 'N/A'}</div>
-              <div className="text-xs text-green-600 mt-1">{config.rt_lock.note || 'Reference RT provided for method standardization.'}</div>
+              <div className="text-xs text-green-600 mt-1">{config.rt_lock.note || 'RT locking available for enhanced retention time accuracy.'}</div>
             </div>
           )}
         </div>
@@ -915,7 +915,9 @@ Configure Method and Export
                                 </div>
                                 <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
                                   <div className="font-medium text-green-800">RETENTION TIME LOCKING (RTL):</div>
-                                  Loading...
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (18.111 min ±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Standard CI</div>
+                                  <div className="text-xs text-green-600 mt-1">RT locking available for enhanced retention time accuracy.</div>
                                 </div>
                               </div>
                             )}
@@ -932,7 +934,9 @@ Configure Method and Export
                                 <div className="font-bold text-lg mb-3 text-gray-800">CF21-FAST-2x15</div>
                                 <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
                                   <div className="font-medium text-green-800">RETENTION TIME LOCKING (RTL):</div>
-                                  Loading...
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (9.143 min ±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Standard CI</div>
+                                  <div className="text-xs text-green-600 mt-1">RT locking available for enhanced retention time accuracy.</div>
                                 </div>
                               </div>
                             )}
@@ -949,7 +953,9 @@ Configure Method and Export
                                 <div className="font-bold text-lg mb-3 text-gray-800">CF20-SV-5x15</div>
                                 <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
                                   <div className="font-medium text-green-800">RETENTION TIME LOCKING (RTL):</div>
-                                  Loading...
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (8.524 min ±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Standard CI</div>
+                                  <div className="text-xs text-green-600 mt-1">RT locking available for enhanced retention time accuracy.</div>
                                 </div>
                               </div>
                             )}
@@ -966,7 +972,9 @@ Configure Method and Export
                                 <div className="font-bold text-lg mb-3 text-gray-800">CP42-30m-BF</div>
                                 <div className="mt-3 p-3 bg-green-50 border-l-4 border-green-400 rounded">
                                   <div className="font-medium text-green-800">RETENTION TIME LOCKING (RTL):</div>
-                                  Loading...
+                                  <div className="text-sm text-green-700 mt-1"><span className="font-semibold">Reference Compound:</span> Chlorpyrifos-methyl (16.593 min ±0.15 min)</div>
+                                  <div className="text-sm text-green-700"><span className="font-semibold">Mode:</span> Standard CI</div>
+                                  <div className="text-xs text-green-600 mt-1">RT locking available for enhanced retention time accuracy.</div>
                                 </div>
                               </div>
                             )}

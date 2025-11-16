@@ -21,7 +21,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.30,
-      "note": "2×15 m 串联恒流农药筛查方法，支持 RT 锁定和中段反吹。",
+      "note": "Constant-flow pesticide screening with RT locking support. 2×15 m column series, mid-column backflush. Run time ~40 min.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -49,7 +49,7 @@
         "target_rt_min": 18.111,
         "tolerance_min": 0.15,
         "mode_hint": "CF",
-        "note": "参考条件下锁定到约 18.11 min；不同实验室请以本机实测 RT 为准，可整体平移。"
+        "note": "Locked to ~18.11 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     },
     "STD-CF-40": {
@@ -93,7 +93,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.25,
-      "note": "2×15 m 串联恒流快速筛查方法，约 21 min，总 runtime，适合高通量农残筛查。",
+      "note": "Fast constant-flow pesticide screening. 2×15 m columns, ~21 min run time. High-throughput capability with mid-column backflush.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -121,7 +121,7 @@
         "target_rt_min": 9.143,
         "tolerance_min": 0.15,
         "mode_hint": "CF",
-        "note": "快速程序下参考 RT ≈ 9.14 min，实际应用时需按本机锁定。"
+        "note": "Locked to ~9.14 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     },
     "CP42-30m-BF": {
@@ -144,7 +144,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.30,
-      "note": "30 m 单柱恒压程序，兼容后柱限流+反吹配置，适合常规农残分离。",
+      "note": "30 m constant-pressure separation. Post-column restrictor compatible with backflush.~42 min run time.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -172,7 +172,7 @@
         "target_rt_min": 16.593,
         "tolerance_min": 0.15,
         "mode_hint": "CP",
-        "note": "恒压模式下参考 RT ≈ 16.59 min。"
+        "note": "Locked to ~16.59 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     },
     "CF21-FAST-2x15": {
@@ -196,7 +196,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.25,
-      "note": "2×15 m 串联恒流快速筛查方法，约 21 min，总 runtime，适合高通量农残筛查。",
+      "note": "Fast constant-flow pesticide screening. 2×15 m columns, ~21 min run time. High-throughput capability with mid-column backflush.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -224,7 +224,7 @@
         "target_rt_min": 9.143,
         "tolerance_min": 0.15,
         "mode_hint": "CF",
-        "note": "快速程序下参考 RT ≈ 9.14 min，实际应用时需按本机锁定。"
+        "note": "Locked to ~9.14 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     },
     "CF20-SV-5x15": {
@@ -247,7 +247,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.25,
-      "note": "5 m+15 m 串联恒流、推荐 Solvent-Vent 进样，适合复杂、较高溶剂负荷基质。",
+      "note": "Solvent-Vent injection with 5 m+15 m column series. Ideal for complex samples with high solvent loads.~20 min runtime.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -274,7 +274,7 @@
         "target_rt_min": 8.524,
         "tolerance_min": 0.15,
         "mode_hint": "CF",
-        "note": "Solvent-Vent 快速程序下参考 RT ≈ 8.52 min。"
+        "note": "Locked to ~8.52 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     },
     "CP42-30m-BF": {
@@ -297,7 +297,7 @@
       "source_temp": "280",
       "quad_temp": "150",
       "default_rt_window": 0.30,
-      "note": "30 m 单柱恒压程序，兼容后柱限流+反吹配置，适合常规农残分离。",
+      "note": "30 m constant-pressure separation. Post-column restrictor compatible with backflush.~42 min run time.",
       "backflush": true,
       "backflush_params": {
         "enabled": true,
@@ -325,7 +325,7 @@
         "target_rt_min": 16.593,
         "tolerance_min": 0.15,
         "mode_hint": "CP",
-        "note": "恒压模式下参考 RT ≈ 16.59 min。"
+        "note": "Locked to ~16.59 min under reference conditions; adjust using your lab's measured RT as needed."
       }
     }
   },
