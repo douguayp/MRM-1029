@@ -25,16 +25,12 @@ export async function POST(request: NextRequest) {
       family,
       mode,
       methodId,
-      compoundIds,
-      expandCE = true,
-      delta = 4
+      compoundIds
     } = body as {
       family: Family;
       mode: GenerationMode;
       methodId?: string;
       compoundIds: string[];
-      expandCE?: boolean;
-      delta?: number;
     };
 
     if (!family || !mode || !compoundIds || !Array.isArray(compoundIds)) {
@@ -85,8 +81,9 @@ export async function POST(request: NextRequest) {
         Q1: t.precursorIon,
         Q3: t.productIon,
         CE: t.collisionEnergy,
-        CE_low: t.collisionEnergy - delta,
-        CE_high: t.collisionEnergy + delta,
+        // REMOVED CE expansion switches - hardcoded in future version
+        CE_low: t.collisionEnergy - 4,  // Default -4 eV
+        CE_high: t.collisionEnergy + 4, // Default +4 eV
         QuantQual: t.quantQual as 'Quantifier' | 'Qualifier',
         RelativeIntensity: parseFloat(t.relativeIntensity) || 0,
         RI_ref: compound?.ri_CF40 || undefined,  // 使用 CF40 的 RI（根据你的方法调整）
@@ -104,14 +101,10 @@ export async function POST(request: NextRequest) {
         Comment: undefined
       };
 
-      // CE 扩展：生成 L/N/H 三行
-      if (expandCE) {
-        rows.push({ ...baseRow, CE: baseRow.CE_low, Comment: 'CE_tier: L' });
-        rows.push({ ...baseRow, Comment: 'CE_tier: N' });
-        rows.push({ ...baseRow, CE: baseRow.CE_high, Comment: 'CE_tier: H' });
-      } else {
-        rows.push(baseRow);
-      }
+      // CE 扩展：生成 L/N/H 三行 (硬编码启用)
+      rows.push({ ...baseRow, CE: baseRow.CE_low, Comment: 'CE_tier: L' });
+      rows.push({ ...baseRow, Comment: 'CE_tier: N' });
+      rows.push({ ...baseRow, CE: baseRow.CE_high, Comment: 'CE_tier: H' });
     }
 
     console.log(`Build API - Returning ${rows.length} rows`);

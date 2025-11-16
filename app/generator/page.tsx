@@ -31,8 +31,6 @@ export default function Generator() {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState('');
   const [alkaneText, setAlkaneText] = useState('');
-  const [expandCE, setExpandCE] = useState(true);
-  const [ceDelta, setCeDelta] = useState(4);
   const [showGapReport, setShowGapReport] = useState(false);
   const [selectedMethodForExport, setSelectedMethodForExport] = useState<string>('');
   const [methods, setMethods] = useState<Record<string, any>>({});
@@ -252,9 +250,7 @@ export default function Generator() {
           family,
           mode,
           methodId: mode === 'withGC' ? methodId : undefined,
-          compoundIds,
-          expandCE,
-          delta: ceDelta
+          compoundIds
         })
       });
 
@@ -1008,45 +1004,26 @@ Configure Method and Export
               {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
                 <div className="space-y-6">
-                  {mode === 'withGC' && !calibrated && (
-                    <Alert className="border-orange-200 bg-orange-50/50 rounded-2xl">
-                      <AlertCircle className="h-6 w-6 text-orange-600" />
-                      <AlertDescription className="text-lg">
-                        <strong>[Contains GC Status Bar]</strong> Uncalibrated | Upload C7–C30 to get RT_pred<br/>
-                        <span className="text-base text-gray-600">Coverage Range: –</span>
-                      </AlertDescription>
-                    </Alert>
+                  {mode === 'withGC' && (
+                    !calibrated ? (
+                      <Alert className="border-orange-200 bg-orange-50/50 rounded-2xl">
+                        <AlertCircle className="h-6 w-6 text-orange-600" />
+                        <AlertDescription className="text-lg">
+                          RT prediction not run · Upload C8–C35 n-alkane RTs to calculate RTs from RI.
+                        </AlertDescription>
+                      </Alert>
+                    ) : (
+                      <Alert className="border-green-200 bg-green-50/50 rounded-2xl">
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                        <AlertDescription className="text-lg">
+                          RT prediction completed · RI→RT mapping based on C8–C35 n-alkane RTs.
+                        </AlertDescription>
+                      </Alert>
+                    )
                   )}
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     <div className="lg:col-span-3 md:col-span-12 space-y-4">
-                      <Card className="shadow-sm">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg">Control Panel</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3 text-base">
-                          <div className="flex items-center justify-between">
-                            <label className="font-medium">CE Expansion</label>
-                            <Switch checked={expandCE} onCheckedChange={setExpandCE} />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="font-medium block">Δ (eV):</label>
-                            <Input
-                              type="number"
-                              value={ceDelta}
-                              onChange={(e) => setCeDelta(parseInt(e.target.value) || 4)}
-                              className="w-20"
-                              min="2"
-                              max="6"
-                            />
-                          </div>
-                          <Separator />
-                          <div className="text-sm text-gray-600">
-                            Method: {methodId || 'MSD Only'}
-                          </div>
-                        </CardContent>
-                      </Card>
-
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader className="pb-2">
@@ -1100,9 +1077,9 @@ Configure Method and Export
                                       />
                                     </label>
                                   </Button>
-                                  <Button 
-                                    variant="link" 
-                                    size="sm" 
+                                  <Button
+                                    variant="link"
+                                    size="sm"
                                     className="text-xs h-auto p-0"
                                     onClick={handleDownloadAlkaneTemplate}
                                   >
