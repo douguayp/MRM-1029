@@ -35,6 +35,9 @@ export default function Generator() {
   const [selectedMethodForExport, setSelectedMethodForExport] = useState<string>('');
   const [methods, setMethods] = useState<Record<string, any>>({});
 
+  // State for RT prediction toggle
+  const [enableRtPrediction, setEnableRtPrediction] = useState(true);
+
   // New states for validation handling
   const [matchedCompounds, setMatchedCompounds] = useState<NormalizedCompound[]>([]);
   const [unmatchedCompounds, setUnmatchedCompounds] = useState<string[]>([]);
@@ -976,113 +979,115 @@ Configure Method and Export
               {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
                 <div className="space-y-6">
-                  {mode === 'withGC' && (
-                    !calibrated ? (
-                      <Alert className="border-orange-200 bg-orange-50/50 rounded-2xl">
-                        <AlertCircle className="h-6 w-6 text-orange-600" />
-                        <AlertDescription className="text-lg">
-                          RT prediction not run · Upload C8–C35 n-alkane RTs to calculate RTs from RI.
-                        </AlertDescription>
-                      </Alert>
-                    ) : (
-                      <Alert className="border-green-200 bg-green-50/50 rounded-2xl">
-                        <CheckCircle2 className="h-6 w-6 text-green-600" />
-                        <AlertDescription className="text-lg">
-                          RT prediction completed · RI→RT mapping based on C8–C35 n-alkane RTs.
-                        </AlertDescription>
-                      </Alert>
-                    )
-                  )}
-
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     <div className="lg:col-span-3 md:col-span-12 space-y-4">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">RI Calibration (n-Alkanes C8–C35)</CardTitle>
-                            <CardDescription className="text-sm">
-                              Enter retention times (RT) for n-alkanes (C8–C35) under the current GC method. The system will complete RI→RT mapping calibration based on RI (retention index) from the database, and calculate predicted retention time RT_pred and suggested time windows for target compounds.
-                            </CardDescription>
+                          <CardHeader>
+                            <div className="flex items-center justify-between pb-3">
+                              <CardTitle className="text-lg">RI Calibration (n-Alkanes C8–C35)</CardTitle>
+                              <Switch
+                                checked={enableRtPrediction}
+                                onCheckedChange={setEnableRtPrediction}
+                              />
+                            </div>
+                            <Label className="text-base">Enable RT prediction from RI</Label>
+                            {/* Status line based on toggle state */}
+                            {!enableRtPrediction ? (
+                              <div className="text-sm text-orange-600 mt-2">
+                                RT prediction not used · You can still export MRM-only methods (RT left blank).
+                              </div>
+                            ) : !calibrated ? (
+                              <div className="text-sm text-orange-600 mt-2">
+                                RT prediction not run · Upload C8–C35 n-alkane RTs to calculate RTs from RI.
+                              </div>
+                            ) : (
+                              <div className="text-sm text-green-600 mt-2">
+                                RT prediction completed · RI→RT mapping based on C8–C35 n-alkane RTs.
+                              </div>
+                            )}
                           </CardHeader>
                           <CardContent className="space-y-3">
-                            {!calibrated ? (
-                              <>
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                                  <div className="text-xs text-blue-800 mb-1 font-semibold">Format:</div>
-                                  <div className="text-xs text-blue-700 space-y-0.5 font-mono">
-                                    <div>• Per line: carbon number, RT (e.g. C7, 0.85)</div>
-                                    <div>• At least 5 alkanes recommended</div>
+                            {enableRtPrediction ? (
+                              calibrated ? (
+                                <Alert className="border-green-200 bg-green-50">
+                                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                  <AlertDescription className="text-xs">Calibration Applied</AlertDescription>
+                                </Alert>
+                              ) : (
+                                <>
+                                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                                    <div className="text-xs text-blue-800 mb-1 font-semibold">Format:</div>
+                                    <div className="text-xs text-blue-700 space-y-0.5 font-mono">
+                                      <div>• Per line: carbon number, RT (e.g. C7, 0.85)</div>
+                                      <div>• At least 5 alkanes recommended</div>
+                                    </div>
                                   </div>
-                                </div>
 
-                                <div>
-                                  <label className="app-label block mb-1.5">
-                                    Manual RI Calibration Data Input
-                                  </label>
-                                  <Textarea
-                                    placeholder={"C8,  2.466\nC9,  3.014\nC10, 3.513\nC11, 3.970"}
-                                    value={alkaneText}
-                                    onChange={(e) => setAlkaneText(e.target.value)}
-                                    className="h-24 font-mono text-sm app-textarea"
-                                  />
-                                </div>
-                                <div className="flex items-center gap-3 flex-wrap">
-                                  <span className="app-muted-text">Or Upload CSV</span>
-                                  <Button variant="outline" size="sm" asChild>
-                                    <label className="cursor-pointer">
-                                      Select File
-                                      <input
-                                        type="file"
-                                        accept=".csv,.txt"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) {
-                                            const reader = new FileReader();
-                                            reader.onload = (event) => {
-                                              const text = event.target?.result as string;
-                                              setAlkaneText(text);
-                                            };
-                                            reader.readAsText(file);
-                                          }
-                                        }}
-                                        className="hidden"
-                                      />
+                                  <div>
+                                    <label className="app-label block mb-1.5">
+                                      Manual RI Calibration Data Input
                                     </label>
-                                  </Button>
-                                  <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="text-xs h-auto p-0"
-                                    onClick={handleDownloadAlkaneTemplate}
-                                  >
-                                    (Template Download)
-                                  </Button>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button
-                                    onClick={handleCalibrate}
-                                    disabled={loading || !alkaneText.trim()}
-                                    size="sm"
-                                    className="flex-1"
-                                  >
-                                    Apply Calibration
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    onClick={() => setAlkaneText('')}
-                                    size="sm"
-                                    className="flex-1"
-                                  >
+                                    <Textarea
+                                      placeholder={"C8,  2.466\nC9,  3.014\nC10, 3.513\nC11, 3.970"}
+                                      value={alkaneText}
+                                      onChange={(e) => setAlkaneText(e.target.value)}
+                                      className="h-24 font-mono text-sm app-textarea"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-3 flex-wrap">
+                                    <span className="app-muted-text">Or Upload CSV</span>
+                                    <Button variant="outline" size="sm" asChild>
+                                      <label className="cursor-pointer">
+                                        Select File
+                                        <input
+                                          type="file"
+                                          accept=".csv,.txt"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                              const reader = new FileReader();
+                                              reader.onload = (event) => {
+                                                const text = event.target?.result as string;
+                                                setAlkaneText(text);
+                                              };
+                                              reader.readAsText(file);
+                                            }
+                                          }}
+                                          className="hidden"
+                                        />
+                                      </label>
+                                    </Button>
+                                    <Button
+                                      variant="link"
+                                      size="sm"
+                                      className="text-xs h-auto p-0"
+                                      onClick={handleDownloadAlkaneTemplate}
+                                    >
+                                      (Template Download)
+                                    </Button>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <Button
+                                      onClick={handleCalibrate}
+                                      disabled={loading || !alkaneText.trim()}
+                                      size="sm"
+                                      className="flex-1"
+                                    >
+                                      Apply Calibration
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      onClick={() => setAlkaneText('')}
+                                      size="sm"
+                                      className="flex-1"
+                                    >
 Clear
-                                  </Button>
-                                </div>
-                              </>
-                            ) : (
-                              <Alert className="border-green-200 bg-green-50">
-                                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                <AlertDescription className="text-xs">Calibration Applied</AlertDescription>
-                              </Alert>
-                            )}
+                                    </Button>
+                                  </div>
+                                </>
+                              )
+                            ) : null}
                           </CardContent>
                         </Card>
                       )}
