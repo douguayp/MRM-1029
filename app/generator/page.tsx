@@ -528,37 +528,7 @@ C35,12.070`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-
-      {/* Simple Header */}
-      <header className="bg-white border-b border-gray-200 py-3 px-6">
-        <div className="container mx-auto max-w-7xl flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold text-gray-800">MRM Method Builder</h1>
-            <Select value={family} onValueChange={setFamily}>
-              <SelectTrigger className="w-56">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORY_OPTIONS.map((option) => (
-                  <SelectItem
-                    key={option.value}
-                    value={option.value}
-                    disabled={option.disabled}
-                  >
-                    {option.label}
-                    {option.disabled && (
-                      <span className="ml-2 text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded-full">
-                        Updating
-                      </span>
-                    )}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50">
 
       {/* Main Content */}
       <div className="flex-1 flex">

@@ -4,9 +4,23 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { User, LogOut, ArrowRight, ChevronDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
 
-export function Navbar() {
+// Category options for dropdown
+const CATEGORY_OPTIONS = [
+  { value: 'Pesticides', label: 'Pesticide Residues' },
+  { value: 'Environmental', label: 'Environmental Contaminants' },
+  { value: 'Veterinary', label: 'Veterinary Drug Residues', disabled: true }
+] as const;
+
+interface NavbarProps {
+  family?: string;
+  onFamilyChange?: (family: string) => void;
+  showCategorySelector?: boolean;
+}
+
+export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySelector = true }: NavbarProps) {
   const [user, setUser] = useState<{ username: string; email: string } | null>(null);
   const [showProductMenu, setShowProductMenu] = useState(false);
   const [showResourcesMenu, setShowResourcesMenu] = useState(false);
@@ -228,6 +242,29 @@ export function Navbar() {
                     </span>
                   </Button>
                 </Link>
+                {showCategorySelector && (
+                  <Select value={family} onValueChange={onFamilyChange}>
+                    <SelectTrigger className="w-44 h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORY_OPTIONS.map((option) => (
+                        <SelectItem
+                          key={option.value}
+                          value={option.value}
+                          disabled={option.disabled}
+                        >
+                          {option.label}
+                          {option.disabled && (
+                            <span className="ml-2 text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded-full">
+                              Updating
+                            </span>
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </>
             )}
           </div>
