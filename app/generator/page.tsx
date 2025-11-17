@@ -985,13 +985,12 @@ Configure Method and Export
                         <Card className="shadow-sm">
                           <CardHeader>
                             <div className="flex items-center justify-between pb-3">
-                              <CardTitle className="text-lg">RI Calibration (n-Alkanes C8–C35)</CardTitle>
+                              <CardTitle className="text-lg">RT Prediction from RI</CardTitle>
                               <Switch
                                 checked={enableRtPrediction}
                                 onCheckedChange={setEnableRtPrediction}
                               />
                             </div>
-                            <Label className="text-base">Enable RT prediction from RI</Label>
                             {/* Status line based on toggle state */}
                             {!enableRtPrediction ? (
                               <div className="text-sm text-orange-600 mt-2">
@@ -1016,14 +1015,6 @@ Configure Method and Export
                                 </Alert>
                               ) : (
                                 <>
-                                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
-                                    <div className="text-xs text-blue-800 mb-1 font-semibold">Format:</div>
-                                    <div className="text-xs text-blue-700 space-y-0.5 font-mono">
-                                      <div>• Per line: carbon number, RT (e.g. C7, 0.85)</div>
-                                      <div>• At least 5 alkanes recommended</div>
-                                    </div>
-                                  </div>
-
                                   <div>
                                     <label className="app-label block mb-1.5">
                                       Manual RI Calibration Data Input
