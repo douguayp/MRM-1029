@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -17,6 +18,13 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 
 type Step = 'input' | 'path' | 'configure';
+
+// Category options for dropdown
+const CATEGORY_OPTIONS = [
+  { value: 'Pesticides', label: 'Pesticide Residues' },
+  { value: 'Environmental', label: 'Environmental Contaminants' },
+  { value: 'Veterinary', label: 'Veterinary Drug Residues', disabled: true }
+] as const;
 
 export default function Generator() {
   const [family, setFamily] = useState<Family>('Pesticides');
@@ -525,85 +533,38 @@ C35,12.070`;
       {/* Simple Header */}
       <header className="bg-white border-b border-gray-200 py-3 px-6">
         <div className="container mx-auto max-w-7xl flex items-center justify-between">
-         
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-semibold text-gray-800">MRM Method Builder</h1>
+            <Select value={family} onValueChange={setFamily}>
+              <SelectTrigger className="w-56">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORY_OPTIONS.map((option) => (
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                  >
+                    {option.label}
+                    {option.disabled && (
+                      <span className="ml-2 text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded-full">
+                        Updating
+                      </span>
+                    )}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <div className="flex-1 flex">
-        <div className="w-full flex gap-4 px-4 py-4">
-          {/* Left Sidebar */}
-          <aside className="w-72 flex-shrink-0">
-            <div className="sticky top-6">
-              <Card className="shadow-sm">
-                <CardHeader className="pb-2 relative">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="app-section-title">Target Categories</CardTitle>
-                    <span data-tip="Select an analyte category" className="relative cursor-help inline-flex items-center group">
-                      <Info className="h-3.5 w-3.5 text-gray-500 hover:text-gray-700 transition-colors" />
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <nav className="space-y-1.5">
-                    <button
-                      onClick={() => setFamily('Pesticides')}
-                      className={clsx(
-                        'app-nav-button',
-                        family === 'Pesticides'
-                          ? 'bg-primary text-primary-foreground shadow-sm'
-                          : 'bg-transparent text-slate-700 hover:bg-slate-100'
-                      )}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span>Pesticide Residues</span>
-                        {family === 'Pesticides' && <CheckCircle2 className="h-4 w-4" />}
-                      </div>                    </button>
+        <div className="w-full px-4 py-4">
 
-                    <button
-                      onClick={() => setFamily('Environmental')}
-                      className={clsx(
-                        'app-nav-button',
-                        family === 'Environmental'
-                          ? 'bg-primary text-primary-foreground shadow-sm'
-                          : 'bg-transparent text-slate-700 hover:bg-slate-100'
-                      )}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span>Environmental Contaminants</span>
-                        {family === 'Environmental' && <CheckCircle2 className="h-4 w-4" />}
-                      </div>
-                    </button>
-                     <button
-                      disabled
-                      className="app-nav-button bg-gray-50 text-gray-400 cursor-not-allowed flex items-center justify-between"
-                    >
-                      <span>Veterinary Drug Residues</span>
-                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                        Updating
-                      </span>
-                    </button>
-                  </nav>
-                </CardContent>
-              </Card>
-
-              <Card className="mt-3 shadow-sm border-gray-100 bg-white/50">
-                <CardContent className="pt-2">
-                  <div className="text-[11px] text-muted-foreground">
-                    <p
-                      className="font-semibold mb-0 text-slate-700 cursor-help hover:text-slate-900 transition-colors"
-                      title="Generate GC-QQQ MRM transition tables for multi-residue analysis."
-                    >
-                      About this tool
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </aside>
-
-          {/* Right Main Content */}
-          <main className="flex-1 min-w-0">
+          <main className="w-full">
             {/* Step Indicator */}
             <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-6">
@@ -980,7 +941,7 @@ Configure Method and Export
               {step === 'configure' && (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    <div className="lg:col-span-3 md:col-span-12 space-y-4">
+                    <div className="lg:col-span-4 md:col-span-12 space-y-4">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader>
@@ -1084,7 +1045,7 @@ Clear
                       )}
                     </div>
 
-                    <div className="lg:col-span-9 md:col-span-12">
+                    <div className="lg:col-span-12 md:col-span-12">
                       <Card className="rounded-2xl shadow-sm">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
