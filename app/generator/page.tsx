@@ -1192,37 +1192,6 @@ Clear
                       </div>
                     </div>
 
-                    <Separator />
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                      <div className="text-lg font-semibold text-gray-700">
-                        Export GC Method Parameters
-                      </div>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-lg text-gray-600 mr-2">Select Method:</span>
-                        <select
-                          value={selectedMethodForExport}
-                          onChange={(e) => setSelectedMethodForExport(e.target.value)}
-                          className="px-4 py-2 border border-gray-300 rounded-md text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                            <option value="">-- Select Method --</option>
-                          <option value="CF40-LOCKABLE">CF40-LOCKABLE</option>
-                          <option value="STD-CF-40">STD-CF-40</option>
-                          <option value="FAST-CF-20">FAST-CF-20</option>
-                          <option value="CP-40">CP-40</option>
-                          <option value="CF-5x15">CF-5x15</option>
-                        </select>
-                        <Button 
-                          onClick={handleExportMethod} 
-                          variant="default" 
-                          size="lg" 
-                          className="font-medium"
-                          disabled={!selectedMethodForExport}
-                        >
-                          <FileDown className="h-5 w-5 mr-2" />
-                          Export Method
-                        </Button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
