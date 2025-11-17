@@ -910,8 +910,9 @@ Configure Method and Export
               {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    <div className="lg:col-span-4 md:col-span-12 space-y-4">
+                  <div className="grid grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-6 mt-6">
+                    {/** Left Column: RT Prediction */}
+                    <div>
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader>
@@ -1015,7 +1016,8 @@ Clear
                       )}
                     </div>
 
-                    <div className="lg:col-span-12 md:col-span-12">
+                    {/** Right Column: Method Transitions */}
+                    <div>
                       <Card className="rounded-2xl shadow-sm">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
