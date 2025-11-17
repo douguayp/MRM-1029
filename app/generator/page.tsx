@@ -754,35 +754,7 @@ Configure Method and Export
                           </div>
                         </div>
 
-                        {normalized.length > 0 && (
-                          <div className="p-4 bg-muted/50 rounded-lg border">
-                            <div className="flex gap-4 items-center flex-wrap">
-                              <span className="app-label">Validation Results</span>
-                              <div className="flex items-center gap-1.5">
-                                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                <span>Matched {normalized.length}</span>
-                              </div>
-                              {unmatched.length > 0 && (
-                                <>
-                                  <div className="flex items-center gap-1.5">
-                                    <AlertCircle className="h-4 w-4 text-orange-600" />
-                                    <span>Unmatched {unmatched.length}</span>
-                                  </div>
-                                  <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="h-auto p-0 text-primary font-medium"
-                                    onClick={() => setShowGapReport(true)}
-                                  >
-                                    View Gap Report
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* New Validation Results Section */}
+                        {/* Detailed Validation Results */}
                         {showValidationResults && validationSummary && (
                           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div className="flex items-center justify-between mb-3">
