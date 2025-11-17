@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface ResultsTableProps {
@@ -30,12 +30,6 @@ export function ResultsTable({ rows }: ResultsTableProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Generated Method Transitions</CardTitle>
-        <CardDescription>
-          {rows.length} transition{rows.length !== 1 ? 's' : ''} generated
-        </CardDescription>
-      </CardHeader>
       <CardContent>
         <div className="rounded-md border overflow-x-auto">
           <Table>

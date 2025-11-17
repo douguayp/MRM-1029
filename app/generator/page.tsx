@@ -1018,16 +1018,16 @@ Clear
 
                     {/** Right Column: Method Transitions */}
                     <div>
-                      <Card className="rounded-2xl shadow-sm">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <CardTitle className="text-xl">Generated Method Transitions</CardTitle>
-                            <div className="text-base text-gray-600">
-                              Search/Filter/Column Show
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
+                      <div className="bg-white border border-b-0 border-x border-t border-gray-200 rounded-t-lg px-4 py-3 flex items-center justify-between">
+                        <div className="text-base font-semibold text-gray-800 flex items-center gap-2">
+                          <div>Generated Method Transitions</div>
+                          <div className="text-sm text-gray-600 font-normal">· {rows.length} transitions generated</div>
+                        </div>
+                        <div className="text-base text-gray-600 flex items-center">
+                          Search/Filter/Column Show
+                        </div>
+                      </div>
+                      <div className="bg-white border border-t-0 border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
                           {rows.length > 0 ? (
                             <>
                               <div className="max-h-[600px] overflow-y-auto">
@@ -1044,8 +1044,7 @@ Clear
                               <p className="text-base mt-2">Complete steps 1 and 2 first</p>
                             </div>
                           )}
-                        </CardContent>
-                      </Card>
+                      </div>
                     </div>
                   </div>
 
