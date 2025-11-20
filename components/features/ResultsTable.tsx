@@ -1,5 +1,6 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import { BuildRow } from '@/lib/types';
 import {
   Table,
@@ -9,63 +10,73 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface ResultsTableProps {
   rows: BuildRow[];
+  maxHeight?: string | number;
 }
 
-export function ResultsTable({ rows }: ResultsTableProps) {
+const DEFAULT_MAX_HEIGHT = '100%';
+
+export function ResultsTable({ rows, maxHeight = DEFAULT_MAX_HEIGHT }: ResultsTableProps) {
   if (rows.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Results</CardTitle>
-          <CardDescription>No data to display</CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+        No data to display
+      </div>
     );
   }
 
+  let heightStyle: CSSProperties;
+  if (typeof maxHeight === 'number') {
+    heightStyle = { height: `${maxHeight}px` };
+  } else if (maxHeight === '100%') {
+    heightStyle = { height: '100%' };
+  } else {
+    heightStyle = { maxHeight };
+  }
+
   return (
-    <Card>
-      <CardContent>
-        <div className="rounded-md border overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Compound</TableHead>
-                <TableHead>Q1</TableHead>
-                <TableHead>Q3</TableHead>
-                <TableHead>CE (V)</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>RI</TableHead>
-                <TableHead>RT (min)</TableHead>
-                <TableHead>RT Window</TableHead>
+    <div className="rounded-md border bg-white h-full">
+      <div className="overflow-x-auto h-full">
+        <div className="overflow-y-auto h-full" style={heightStyle}>
+          <Table className="min-w-full">
+            <TableHeader className="sticky top-0 bg-white z-10 shadow-sm">
+              <TableRow className="h-10">
+                <TableHead className="sticky top-0 bg-white z-10">Compound</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">Q1</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">Q3</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">CE (V)</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">Type</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">RI</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">RT (min)</TableHead>
+                <TableHead className="sticky top-0 bg-white z-10">RT Window</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-medium">{row.compound || row.compoundId}</TableCell>
-                  <TableCell>{row.Q1}</TableCell>
-                  <TableCell>{row.Q3}</TableCell>
-                  <TableCell>{row.CE}</TableCell>
-                  <TableCell>
+                <TableRow key={`${row.compoundId}-${row.Q1}-${row.Q3}-${idx}`} className="h-10">
+                  <TableCell className="font-medium text-sm py-2 leading-tight">
+                    {row.compound || row.compoundId}
+                  </TableCell>
+                  <TableCell className="text-sm py-2">{row.Q1}</TableCell>
+                  <TableCell className="text-sm py-2">{row.Q3}</TableCell>
+                  <TableCell className="text-sm py-2">{row.CE}</TableCell>
+                  <TableCell className="text-sm py-2">
                     <Badge variant={row.QuantQual === 'Quantifier' ? 'default' : 'outline'}>
                       {row.QuantQual}
                     </Badge>
                   </TableCell>
-                  <TableCell>{row.RI_ref ?? '-'}</TableCell>
-                  <TableCell>{row.RT_pred?.toFixed(2) ?? '-'}</TableCell>
-                  <TableCell className="text-xs">{row.RT_window ?? '-'}</TableCell>
+                  <TableCell className="text-sm py-2">{row.RI_ref ?? '-'}</TableCell>
+                  <TableCell className="text-sm py-2">{row.RT_pred?.toFixed(2) ?? '-'}</TableCell>
+                  <TableCell className="text-xs py-2">{row.RT_window ?? '-'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

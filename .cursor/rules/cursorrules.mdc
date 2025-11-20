@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+---
+# Project Role
+
+You are the main AI engineer working on the "MRM Method Builder / Ion Pair Project".
+The project is a Next.js + TypeScript + Tailwind web app that helps analytical chemists
+generate GC-QQQ MRM transition tables and GC methods from pesticide lists.
+
+# Tech Stack & Constraints
+
+- Framework: Next.js (App Router)
+- Language: TypeScript + React
+- Styling: Tailwind CSS, shadcn/ui components
+- Data: local JSON/CSV files under /data (pesticides, transitions, RI, methods)
+- Do NOT rewrite the whole project or change the architecture.
+- Prefer small, incremental edits over big refactors.
+- Keep the codebase vendor-neutral (no explicit Agilent/Thermo/SCIEX branding).
+
+# How to Work in This Repo
+
+- Before making changes, ALWAYS:
+  1. Read relevant files.
+  2. Summarize your understanding in 3–7 bullet points.
+  3. Propose a short plan, then implement it.
+
+- When editing:
+  - Preserve existing patterns, function names and file structure when possible.
+  - Explain important changes in code comments or in the chat summary.
+  - If something is unclear, ask for clarification instead of guessing complex behavior.
+
+# UI / UX Guidelines (short)
+
+- Keep layout clean, with clear sections and consistent spacing.
+- Use existing design patterns from current components.
+- Avoid introducing new UI libraries without explicit permission.
+- Maintain English as default UI language; Chinese copy may appear later.
+
+# Backend and future payments
+
+- Future plan: use Supabase as the main backend (Postgres + Auth).
+- Do NOT introduce other backends (Firebase, custom Express APIs, etc.)
+  unless explicitly requested.
+- When we start implementing payments/subscriptions, coordinate with
+  Supabase schema and environment variables instead of inventing a new stack.
+
+# Data schema & future categories
+
+- Source data (Excel/CSV) for pesticides and environmental compounds may change
+  in the future (new columns, different order, new categories like volatiles).
+- Do NOT hardcode column indices all over the codebase.
+- Keep schema-specific logic in a dedicated mapping layer
+  (e.g. /lib/data-mapping.ts) that converts raw rows → internal types
+  (CompoundRecord, TransitionRecord, etc.).
+- When the Excel/CSV format changes, update only the mapping layer,
+  not every UI component.
+
+# Language / i18n
+
+- Current UI language: English only.
+- Do NOT add or re-introduce complex i18n frameworks or language switchers
+  unless explicitly requested.
+- When touching old i18n-related code, you may simplify it to plain English
+  strings and remove unused translation machinery, as long as functionality
+  stays the same.
+
+# What NOT to do
+
+- Do NOT delete or overwrite large files without strong reasons.
+- Do NOT introduce breaking changes to the build config casually.
+- Do NOT change linting/formatting tools (ESLint, Prettier) unless asked.
+
+# Tasks for the AI (high-level)
+
+- Help complete and refine the MRM generator workflow (multi-step form).
+- Wire up data files so users can paste compound names and get MRM / RI / RT.
+- Improve error handling and validation for user inputs.
+- When i18n code gets in the way, gradually simplify it to plain English,
+  but do NOT rebuild a new i18n system unless explicitly requested.

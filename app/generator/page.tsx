@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { clsx } from 'clsx';
 import { Family, GenerationMode, NormalizedCompound, BuildRow, AlkanePoint } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -527,14 +527,16 @@ C35,12.070`;
     }
   };
 
+  const isFullHeight = step === 'configure';
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={clsx('min-h-screen bg-gray-50 flex flex-col', isFullHeight && 'h-screen overflow-hidden')}>
 
       {/* Main Content */}
-      <div className="flex-1 flex">
-        <div className="w-full px-4 py-4">
+      <div className={clsx('flex-1 flex', isFullHeight && 'min-h-0')}>
+        <div className={clsx('w-full px-4 py-4', isFullHeight && 'flex flex-col flex-1 min-h-0')}>
 
-          <main className="w-full">
+          <main className={clsx('w-full', isFullHeight && 'flex flex-col flex-1 min-h-0 overflow-hidden')}>
             {/* Step Indicator */}
             <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-6">
@@ -612,7 +614,7 @@ Configure Method and Export
             </div>
 
             {/* Step Content */}
-            <div className="space-y-6">
+            <div className={clsx('space-y-6', step === 'configure' && 'flex flex-col flex-1 min-h-0 gap-6 overflow-hidden')}>
               {/* STEP 1: INPUT */}
               {step === 'input' && (
                 <div className="space-y-6">
@@ -909,21 +911,16 @@ Configure Method and Export
 
               {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-6 mt-6">
-                    {/** Left Column: RT Prediction */}
-                    <div>
+                <div className="flex flex-col flex-1 min-h-0 gap-5">
+                  <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-5 mt-5 flex-1 min-h-0 overflow-hidden">
+                    <div className="flex flex-col gap-4 lg:h-full lg:overflow-y-auto lg:pr-2">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
-                          <CardHeader>
-                            <div className="flex items-center justify-between pb-3">
+                          <CardHeader className="pb-2">
+                            <div className="flex items-center justify-between">
                               <CardTitle className="text-lg">RT Prediction from RI</CardTitle>
-                              <Switch
-                                checked={enableRtPrediction}
-                                onCheckedChange={setEnableRtPrediction}
-                              />
+                              <Switch checked={enableRtPrediction} onCheckedChange={setEnableRtPrediction} />
                             </div>
-                            {/* Status line based on toggle state */}
                             {!enableRtPrediction ? (
                               <div className="text-sm text-orange-600 mt-2">
                                 RT prediction not used · You can still export MRM-only methods (RT left blank).
@@ -948,9 +945,7 @@ Configure Method and Export
                               ) : (
                                 <>
                                   <div>
-                                    <label className="app-label block mb-1.5">
-                                      Manual RI Calibration Data Input
-                                    </label>
+                                    <label className="app-label block mb-1.5">Manual RI Calibration Data Input</label>
                                     <Textarea
                                       placeholder={"C8,  2.466\nC9,  3.014\nC10, 3.513\nC11, 3.970"}
                                       value={alkaneText}
@@ -981,31 +976,16 @@ Configure Method and Export
                                         />
                                       </label>
                                     </Button>
-                                    <Button
-                                      variant="link"
-                                      size="sm"
-                                      className="text-xs h-auto p-0"
-                                      onClick={handleDownloadAlkaneTemplate}
-                                    >
+                                    <Button variant="link" size="sm" className="text-xs h-auto p-0" onClick={handleDownloadAlkaneTemplate}>
                                       (Template Download)
                                     </Button>
                                   </div>
                                   <div className="flex gap-2">
-                                    <Button
-                                      onClick={handleCalibrate}
-                                      disabled={loading || !alkaneText.trim()}
-                                      size="sm"
-                                      className="flex-1"
-                                    >
+                                    <Button onClick={handleCalibrate} disabled={loading || !alkaneText.trim()} size="sm" className="flex-1">
                                       Apply Calibration
                                     </Button>
-                                    <Button
-                                      variant="outline"
-                                      onClick={() => setAlkaneText('')}
-                                      size="sm"
-                                      className="flex-1"
-                                    >
-Clear
+                                    <Button variant="outline" onClick={() => setAlkaneText('')} size="sm" className="flex-1">
+                                      Clear
                                     </Button>
                                   </div>
                                 </>
@@ -1016,82 +996,64 @@ Clear
                       )}
                     </div>
 
-                    {/** Right Column: Method Transitions */}
-                    <div>
-                      <div className="bg-white border border-b-0 border-x border-t border-gray-200 rounded-t-lg px-4 py-3 flex items-center justify-between">
+                    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+                      <div className="bg-white border border-b-0 rounded-t-lg px-4 py-3 flex items-center justify-between">
                         <div className="text-base font-semibold text-gray-800 flex items-center gap-2">
-                          <div>Generated Method Transitions</div>
-                          <div className="text-sm text-gray-600 font-normal">· {rows.length} transitions generated</div>
+                          <span>Generated Method Transitions</span>
+                          <span className="text-sm text-gray-600 font-normal">· {rows.length} transitions generated</span>
                         </div>
-                        <div className="text-base text-gray-600 flex items-center">
-                          Search/Filter/Column Show
-                        </div>
+                        <div className="text-sm text-gray-500">Search/Filter/Column Show</div>
                       </div>
-                      <div className="bg-white border border-t-0 border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
-                          {rows.length > 0 ? (
-                            <>
-                              <div className="max-h-[600px] overflow-y-auto">
-                                <ResultsTable rows={rows} />
-                              </div>
-                              <div className="mt-4 text-lg text-gray-600 font-medium">
-                                Total: {rows.length} rows
-                              </div>
-                            </>
-                          ) : (
-                            <div className="text-center py-12 text-gray-500">
-                              <Info className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                              <p className="text-lg">No data</p>
-                              <p className="text-base mt-2">Complete steps 1 and 2 first</p>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center pt-4 border-t">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => goToStep('path')}
-                      className="gap-2"
-                    >
-                      Previous
-                    </Button>
-                    <span className="text-sm text-gray-500">Reselect method or parameters</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Export Bar */}
-              {step === 'configure' && rows.length > 0 && (
-                <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-200 p-5 shadow-lg">
-                  <div className="container mx-auto max-w-6xl space-y-4">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                      <div className="text-lg font-semibold text-gray-700">
-                        Export Transitions
-                      </div>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-lg text-gray-600 mr-2">Select Format:</span>
-                        <Button onClick={() => handleExport('generic')} variant="outline" size="lg" className="font-medium">
-                          Generic CSV
-                        </Button>
-                        <Button onClick={() => handleExport('masshunter')} variant="outline" size="lg" className="font-medium">
-                          Vendor-A Compatible
-                        </Button>
-                        <Button onClick={() => handleExport('both')} size="lg" className="font-medium">
-                          Export All
-                        </Button>
-                        {unmatched.length > 0 && (
-                          <>
-                            <Separator orientation="vertical" className="h-6 mx-2" />
-                            <Button variant="link" size="default" onClick={() => setShowGapReport(true)} className="text-primary hover:text-primary/80 text-lg">
-                              View Gap Report ({unmatched.length})
-                            </Button>
-                          </>
+                      <div className="bg-white border border-t-0 rounded-b-lg flex-1 min-h-0 p-3 overflow-hidden">
+                        {rows.length > 0 ? (
+                          <ResultsTable rows={rows} maxHeight="100%" />
+                        ) : (
+                          <div className="text-center py-12 text-gray-500">
+                            <Info className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                            <p className="text-lg">No data</p>
+                            <p className="text-base mt-2">Complete steps 1 and 2 first</p>
+                          </div>
                         )}
                       </div>
                     </div>
+                  </div>
 
+                  <div className="bg-white/95 backdrop-blur border border-gray-200 rounded-lg shadow-sm p-3 flex flex-col gap-3 flex-none">
+                    <div className="flex justify-between items-center flex-wrap gap-2">
+                      <Button variant="outline" size="default" onClick={() => goToStep('path')} className="gap-2">
+                        Previous
+                      </Button>
+                      <span className="text-sm text-gray-500">Reselect method or parameters</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-3">
+                      {rows.length > 0 ? (
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="text-base font-semibold text-gray-700">Export Transitions</div>
+                          <div className="flex items-center gap-2 flex-wrap text-sm">
+                            <span className="text-gray-600">Select Format:</span>
+                            <Button onClick={() => handleExport('generic')} variant="outline" size="sm">
+                              Generic CSV
+                            </Button>
+                            <Button onClick={() => handleExport('masshunter')} variant="outline" size="sm">
+                              Vendor-A Compatible
+                            </Button>
+                            <Button onClick={() => handleExport('both')} size="sm">
+                              Export All
+                            </Button>
+                            {unmatched.length > 0 && (
+                              <>
+                                <Separator orientation="vertical" className="h-6 mx-2" />
+                                <Button variant="link" size="sm" onClick={() => setShowGapReport(true)} className="text-primary hover:text-primary/80">
+                                  View Gap Report ({unmatched.length})
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-500">Complete previous steps to export transitions.</div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -1144,4 +1106,3 @@ Clear
     </div>
   );
 }
-
