@@ -527,7 +527,7 @@ C35,12.070`;
     }
   };
 
-  const isFullHeight = step === 'configure';
+  const isFullHeight = step === 'configure' || step === 'input';
 
   return (
     <div className={clsx('min-h-screen bg-gray-50 flex flex-col', isFullHeight && 'h-screen overflow-hidden')}>
@@ -614,7 +614,13 @@ Configure Method and Export
             </div>
 
             {/* Step Content */}
-            <div className={clsx('space-y-6', step === 'configure' && 'flex flex-col flex-1 min-h-0 gap-6 overflow-hidden')}>
+            <div
+              className={clsx(
+                'space-y-6',
+                step === 'configure' && 'flex flex-col flex-1 min-h-0 gap-6 overflow-hidden',
+                step === 'input' && 'flex flex-col flex-1 min-h-0 gap-6'
+              )}
+            >
               {/* STEP 1: INPUT */}
               {step === 'input' && (
                 <div className="space-y-6">
@@ -628,7 +634,7 @@ Configure Method and Export
                           <Textarea
                             ref={textareaRef}
                             placeholder={"1912-24-9\nChlorphyrifos\nMalathion\nFenitrothion\nParathion\n56-38-2"}
-                            className="h-48 font-mono text-sm app-textarea"
+                            className="h-40 font-mono text-sm app-textarea"
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                           />
