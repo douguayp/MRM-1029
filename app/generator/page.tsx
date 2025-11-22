@@ -530,13 +530,13 @@ C35,12.070`;
   const isFullHeight = step === 'configure' || step === 'input';
 
   return (
-    <div className={clsx('min-h-screen bg-gray-50 flex flex-col', isFullHeight && 'h-screen')}>
+    <div className='min-h-screen bg-gray-50 flex flex-col'>
 
       {/* Main Content */}
-      <div className={clsx('flex-1 flex', isFullHeight && 'min-h-0')}>
-        <div className={clsx('w-full px-4 py-4', isFullHeight && 'flex flex-col flex-1 min-h-0')}>
+      <div className='flex-1 flex'>
+        <div className='w-full px-4 py-4'>
 
-          <main className={clsx('w-full', isFullHeight && 'flex flex-col flex-1 min-h-0')}>
+          <main className='w-full'>
             {/* Step Indicator */}
             <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-6">
@@ -617,8 +617,7 @@ Configure Method and Export
             <div
               className={clsx(
                 'space-y-6',
-                step === 'configure' && 'flex flex-col gap-6',
-                step === 'input' && 'flex flex-col flex-1 min-h-0 gap-6'
+                step === 'configure' && 'flex flex-col gap-6'
               )}
             >
               {/* STEP 1: INPUT */}
@@ -728,7 +727,7 @@ Configure Method and Export
                               Unmatched compounds ({unmatchedCompounds.length})
                             </div>
 
-                            <div className="max-h-32 mb-3 bg-white rounded p-3 text-sm border">
+                            <div className="mb-3 bg-white rounded p-3 text-sm border max-h-64 overflow-y-auto">
                               {unmatchedCompounds.map((compound, index) => (
                                 <div
                                   key={index}
@@ -919,7 +918,7 @@ Configure Method and Export
               {step === 'configure' && (
                 <div className="flex flex-col gap-5">
                   <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-5">
-                    <div className="flex flex-col gap-4 lg:h-full lg:pr-2">
+                    <div className="flex flex-col gap-4 lg:pr-2">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader className="pb-2">

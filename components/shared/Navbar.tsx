@@ -32,7 +32,8 @@ export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySele
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300 py-4 px-6">
       <div className="container mx-auto max-w-7xl">
-        <div className="flex items-center justify-between">
+        {/* Layout: left logo/title, center nav, right actions with balanced spacing */}
+        <div className="flex items-center gap-6">
           {/* Left: Logo with hover animation */}
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-3 hover:shadow-lg hover:shadow-primary/30 cursor-pointer overflow-hidden">
@@ -66,13 +67,15 @@ export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySele
                 <line x1="5" y1="29" x2="35" y2="29" stroke="white" strokeWidth="1.5" opacity="0.5"/>
               </svg>
             </div>
-            <h1 className="text-lg font-semibold text-gray-900 hover:text-primary transition-colors cursor-pointer">
+            {/* Keep product title on a single line to avoid wrapping next to Home */}
+            <h1 className="text-lg font-semibold text-gray-900 hover:text-primary transition-colors cursor-pointer whitespace-nowrap">
               MRM Method Builder
             </h1>
           </Link>
 
           {/* Center: Navigation Links with underline animation */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* ml-10: add breathing room between product title and first nav item */}
+          <nav className="hidden md:flex items-center gap-8 ml-10">
             <a 
               href="/" 
               className="text-base font-medium text-gray-700 hover:text-primary transition-all duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all after:duration-300"
@@ -193,7 +196,8 @@ export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySele
           </nav>
 
           {/* Right: Auth Buttons */}
-          <div className="flex items-center gap-3">
+          {/* ml-auto: push right action group away from center nav */}
+          <div className="flex items-center gap-3 ml-auto">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -245,7 +249,8 @@ export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySele
                 {showCategorySelector && (
                   <Select value={family} onValueChange={onFamilyChange}>
                     <SelectTrigger className="w-44 h-9">
-                      <SelectValue />
+                      {/* Always show fixed label; selection still updates state via onValueChange */}
+                      <span className="text-sm">Select Category</span>
                     </SelectTrigger>
                     <SelectContent>
                       {CATEGORY_OPTIONS.map((option) => (
@@ -273,4 +278,3 @@ export function Navbar({ family = 'Pesticides', onFamilyChange, showCategorySele
     </header>
   );
 }
-
