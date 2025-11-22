@@ -728,7 +728,7 @@ Configure Method and Export
                               Unmatched compounds ({unmatchedCompounds.length})
                             </div>
 
-                            <div className="max-h-32 overflow-y-auto mb-3 bg-white rounded p-3 text-sm border">
+                            <div className="max-h-32 mb-3 bg-white rounded p-3 text-sm border">
                               {unmatchedCompounds.map((compound, index) => (
                                 <div
                                   key={index}
@@ -919,7 +919,7 @@ Configure Method and Export
               {step === 'configure' && (
                 <div className="flex flex-col gap-5">
                   <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-5">
-                    <div className="flex flex-col gap-4 lg:h-full lg:overflow-y-auto lg:pr-2">
+                    <div className="flex flex-col gap-4 lg:h-full lg:pr-2">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
                           <CardHeader className="pb-2">
@@ -1002,7 +1002,7 @@ Configure Method and Export
                       )}
                     </div>
 
-                    <div className="flex flex-col overflow-hidden self-start">
+                    <div className="flex flex-col self-start">
                       <div className="bg-white border border-b-0 rounded-t-lg px-4 py-3 flex items-center justify-between">
                         <div className="text-base font-semibold text-gray-800 flex items-center gap-2">
                           <span>Generated Method Transitions</span>
@@ -1010,7 +1010,7 @@ Configure Method and Export
                         </div>
                         <div className="text-sm text-gray-500">Search/Filter/Column Show</div>
                       </div>
-                      <div className="bg-white border border-t-0 rounded-b-lg flex-1 min-h-0 p-3 overflow-hidden">
+                      <div className="bg-white border border-t-0 rounded-b-lg flex-1 p-3">
                         {rows.length > 0 ? (
                           <ResultsTable rows={rows} />
                         ) : (
