@@ -623,10 +623,10 @@ Configure Method and Export
             >
               {/* STEP 1: INPUT */}
               {step === 'input' && (
-                <div className="space-y-6">
-                  <Card className="rounded-2xl shadow-sm">
-                    <CardContent className="pt-6">
-                      <div className="space-y-4">
+                <div className="flex flex-col flex-1 min-h-0 gap-6 overflow-hidden">
+                  <Card className="rounded-2xl shadow-sm flex flex-col flex-1 min-h-0">
+                    <CardContent className="pt-6 flex-1 min-h-0 overflow-auto">
+                      <div className="space-y-4 pr-1">
                         <div>
                           <label className="app-label mb-3 block">
                             Paste or type CAS numbers or compound names (one per line)
@@ -746,7 +746,7 @@ Configure Method and Export
                     </CardContent>
                   </Card>
 
-                  <div className="flex justify-end gap-3">
+                  <div className="flex justify-end gap-3 flex-none">
                     <Button
                       variant="outline"
                       size="lg"
@@ -1002,7 +1002,7 @@ Configure Method and Export
                       )}
                     </div>
 
-                    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+                    <div className="flex flex-col overflow-hidden self-start">
                       <div className="bg-white border border-b-0 rounded-t-lg px-4 py-3 flex items-center justify-between">
                         <div className="text-base font-semibold text-gray-800 flex items-center gap-2">
                           <span>Generated Method Transitions</span>
@@ -1012,7 +1012,7 @@ Configure Method and Export
                       </div>
                       <div className="bg-white border border-t-0 rounded-b-lg flex-1 min-h-0 p-3 overflow-hidden">
                         {rows.length > 0 ? (
-                          <ResultsTable rows={rows} maxHeight="100%" />
+                          <ResultsTable rows={rows} />
                         ) : (
                           <div className="text-center py-12 text-gray-500">
                             <Info className="h-12 w-12 mx-auto mb-4 opacity-50" />
