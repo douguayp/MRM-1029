@@ -15,11 +15,15 @@ import { Badge } from '@/components/ui/badge';
 interface ResultsTableProps {
   rows: BuildRow[];
   maxHeight?: string | number;
+  visibleRows?: number;
 }
 
-const DEFAULT_MAX_HEIGHT = '100%';
+const ROW_HEIGHT_PX = 36;
+const HEADER_HEIGHT_PX = 40;
+const DEFAULT_VISIBLE_ROWS = 12;
+const MIN_ROWS_WITHOUT_SCROLL = 5;
 
-export function ResultsTable({ rows, maxHeight = DEFAULT_MAX_HEIGHT }: ResultsTableProps) {
+export function ResultsTable({ rows, maxHeight, visibleRows = DEFAULT_VISIBLE_ROWS }: ResultsTableProps) {
   if (rows.length === 0) {
     return (
       <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
@@ -28,19 +32,23 @@ export function ResultsTable({ rows, maxHeight = DEFAULT_MAX_HEIGHT }: ResultsTa
     );
   }
 
-  let heightStyle: CSSProperties;
+  const rowsToDisplay = Math.max(Math.min(rows.length, visibleRows), MIN_ROWS_WITHOUT_SCROLL);
+  const computedHeight = HEADER_HEIGHT_PX + ROW_HEIGHT_PX * rowsToDisplay;
+
+  let heightStyle: CSSProperties = { maxHeight: `${computedHeight}px` };
+  if (rows.length <= visibleRows) {
+    heightStyle = { height: `${computedHeight}px` };
+  }
   if (typeof maxHeight === 'number') {
-    heightStyle = { height: `${maxHeight}px` };
-  } else if (maxHeight === '100%') {
-    heightStyle = { height: '100%' };
-  } else {
+    heightStyle = { maxHeight: `${maxHeight}px` };
+  } else if (typeof maxHeight === 'string') {
     heightStyle = { maxHeight };
   }
 
   return (
-    <div className="rounded-md border bg-white h-full">
-      <div className="overflow-x-auto h-full">
-        <div className="overflow-y-auto h-full" style={heightStyle}>
+    <div className="rounded-md border bg-white">
+      <div className="overflow-x-auto">
+        <div className="overflow-y-auto" style={heightStyle}>
           <Table className="min-w-full">
             <TableHeader className="sticky top-0 bg-white z-10 shadow-sm">
               <TableRow className="h-9">

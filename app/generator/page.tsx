@@ -530,13 +530,13 @@ C35,12.070`;
   const isFullHeight = step === 'configure' || step === 'input';
 
   return (
-    <div className={clsx('min-h-screen bg-gray-50 flex flex-col', isFullHeight && 'h-screen overflow-hidden')}>
+    <div className={clsx('min-h-screen bg-gray-50 flex flex-col', isFullHeight && 'h-screen')}>
 
       {/* Main Content */}
       <div className={clsx('flex-1 flex', isFullHeight && 'min-h-0')}>
         <div className={clsx('w-full px-4 py-4', isFullHeight && 'flex flex-col flex-1 min-h-0')}>
 
-          <main className={clsx('w-full', isFullHeight && 'flex flex-col flex-1 min-h-0 overflow-hidden')}>
+          <main className={clsx('w-full', isFullHeight && 'flex flex-col flex-1 min-h-0')}>
             {/* Step Indicator */}
             <div className="mb-4 bg-white rounded-lg shadow-sm p-4 border border-gray-200">
               <div className="flex items-center gap-6">
@@ -617,16 +617,16 @@ Configure Method and Export
             <div
               className={clsx(
                 'space-y-6',
-                step === 'configure' && 'flex flex-col flex-1 min-h-0 gap-6 overflow-hidden',
+                step === 'configure' && 'flex flex-col gap-6',
                 step === 'input' && 'flex flex-col flex-1 min-h-0 gap-6'
               )}
             >
               {/* STEP 1: INPUT */}
               {step === 'input' && (
-                <div className="flex flex-col flex-1 min-h-0 gap-6 overflow-hidden">
-                  <Card className="rounded-2xl shadow-sm flex flex-col flex-1 min-h-0">
-                    <CardContent className="pt-6 flex-1 min-h-0 overflow-auto">
-                      <div className="space-y-4 pr-1">
+                <div className="space-y-6">
+                  <Card className="rounded-2xl shadow-sm">
+                    <CardContent className="pt-6">
+                      <div className="space-y-4">
                         <div>
                           <label className="app-label mb-3 block">
                             Paste or type CAS numbers or compound names (one per line)
@@ -746,7 +746,7 @@ Configure Method and Export
                     </CardContent>
                   </Card>
 
-                  <div className="flex justify-end gap-3 flex-none">
+                  <div className="flex justify-end gap-3">
                     <Button
                       variant="outline"
                       size="lg"
@@ -917,8 +917,8 @@ Configure Method and Export
 
               {/* STEP 3: CONFIGURE */}
               {step === 'configure' && (
-                <div className="flex flex-col flex-1 min-h-0 gap-5">
-                  <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-5 mt-5 flex-1 min-h-0 overflow-hidden">
+                <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,380px)_minmax(0,1fr)] gap-5">
                     <div className="flex flex-col gap-4 lg:h-full lg:overflow-y-auto lg:pr-2">
                       {mode === 'withGC' && (
                         <Card className="shadow-sm">
